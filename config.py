@@ -8,8 +8,11 @@ load_dotenv()
 # 添加默认值和类型检查
 WEBHOOK_URL = os.getenv('WEBHOOK_URL', '')  # 设置默认空字符串
 
-# 代理配置
-PROXY_URL = 'http://localhost:7890'
+# 根据环境变量判断是否在Docker中运行
+IS_DOCKER = os.getenv('IS_DOCKER', 'false').lower() == 'true'
+
+# 根据运行环境选择代理地址
+PROXY_URL = 'http://host.docker.internal:7890' if IS_DOCKER else 'http://localhost:7890'
 USE_PROXY = True
 ALWAYS_SEND = True
 
