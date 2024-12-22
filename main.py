@@ -230,10 +230,10 @@ def format_sentiment_data(sentiment_data, analysis, is_change=False):
 def generate_alert_message(ethena_data, market_data, data_store):
     """生成告警消息"""
     now = datetime.now()
-    yesterday_data = data_store.get_yesterday_last_data()
+    previous_data = data_store.get_last_data()
     
-    # 构建今天的数据结构
-    today_data = {
+    # 构建当前数据结构
+    current_data = {
         'timestamp': now.strftime('%Y-%m-%d %H:%M:%S'),
         'ethena': ethena_data,
         'market': {
@@ -247,7 +247,7 @@ def generate_alert_message(ethena_data, market_data, data_store):
         }
     }
     
-    changes = data_store.calculate_changes(yesterday_data, today_data)
+    changes = data_store.calculate_changes(previous_data, current_data)
     analysis = analyze_market_data({
         'ahr999': market_data.get('ahr999'),
         'fear_greed': market_data.get('fear_greed')
@@ -366,15 +366,15 @@ async def daily_monitor():
                     print("获取市场情绪数据失败")
                     continue
                 
-                # 获取昨天的数据
-                yesterday_data = data_store.get_yesterday_last_data()
+                # 获取上次的数据
+                previous_data = data_store.get_last_data()
                 
                 # 保存新数据
                 if data_store.save_data(ethena_data, sentiment_data):
                     print("\n数据保存成功")
                     
                     # 生成消息
-                    if yesterday_data:
+                    if previous_data:
                         print("生成数据对比消息...")
                         message = generate_alert_message(ethena_data, sentiment_data, data_store)
                     else:
@@ -384,7 +384,6 @@ async def daily_monitor():
                     # 发送消息
                     if message:
                         await send_message_async(message)
-                        print("消息发送完成")
                     else:
                         print("消息生成失败")
                 else:

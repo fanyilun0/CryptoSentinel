@@ -8,6 +8,15 @@ load_dotenv()
 # 添加默认值和类型检查
 WEBHOOK_URL = os.getenv('WEBHOOK_URL', '')  # 设置默认空字符串
 
+# 代理配置
+PROXY_URL = 'http://localhost:7890'
+USE_PROXY = True
+ALWAYS_SEND = True
+
+# 时间配置
+INTERVAL = 86400  # 改为24小时检查一次
+TIME_OFFSET = 0
+
 # DeFi 数据源配置
 DEFILLAMA_API = {
     'base_url': 'https://api.llama.fi',
@@ -55,14 +64,6 @@ MARKET_SENTIMENT = {
     }
 }
 
-# 代理配置
-PROXY_URL = 'http://localhost:7890'
-USE_PROXY = True
-ALWAYS_SEND = True
-
-# 时间配置
-INTERVAL = 14400 # 每天检查一次
-TIME_OFFSET = 0
 
 # 数据监控配置
 MONITOR_CONFIG = {

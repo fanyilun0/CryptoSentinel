@@ -4,14 +4,14 @@
 
 ## 📑 目录
 
-- [功能特性](#功能特性)
-- [安装说明](#安装说明)
-- [配置说明](#配置说明)
-- [使用方法](#使用方法)
-- [监控指标](#监控指标)
-- [开发说明](#开发说明)
-- [注意事项](#注意事项)
-- [许可证](#许可证)
+- [功能特性](#-功能特性)
+- [安装说明](#-安装说明)
+- [配置说明](#-配置说明)
+- [使用方法](#-使用方法)
+- [监控指标](#-监控指标)
+- [开发说明](#-开发说明)
+- [注意事项](#-注意事项)
+- [许可证](#-许可证)
 
 ## ✨ 功能特性
 
@@ -29,8 +29,8 @@
 
 1. 克隆仓库:
     ```bash
-    git clone https://github.com/yourusername/crypto-market-monitor.git
-    cd crypto-market-monitor
+    git clone https://github.com/yourusername/CryptoSentinel.git
+    cd CryptoSentinel
     ```
 
 2. 安装依赖:
@@ -43,21 +43,6 @@
 在`config.py`中配置以下参数:
 
 ```python
-# API配置
-DEFILLAMA_API = {
-    "base_url": "https://api.defillama.com",
-    "ethena_endpoint": "/protocol/xxx"
-}
-
-ETHENA_API = {
-    "yield_url": "https://api.ethena.com/yield"
-}
-
-MARKET_SENTIMENT = {
-    "ahr999_url": "https://api.xxx/ahr999",
-    "fear_greed_url": "https://api.xxx/fng"
-}
-
 # 代理配置(可选)
 USE_PROXY = False
 PROXY_URL = "http://your-proxy:port"
@@ -102,7 +87,7 @@ WEBHOOK_URL=your_webhook_url
 #### AHR999指数
 - < 0.45: 抄底区域
 - 0.45-1.2: 定投区域
-- > 1.2: 谨慎区域
+- \> 1.2: 谨慎区域
 
 #### 恐慌贪婪指数
 - 0-20: 极度恐慌
