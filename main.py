@@ -1,6 +1,6 @@
 import asyncio
 import aiohttp
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from store import DataStore
 from config import (
@@ -158,6 +158,18 @@ def format_btc_price(price_data, is_change=False):
     message_parts.append("")
     return message_parts
 
+def format_number_to_readable(number):
+    """将大数字转换为易读格式（B/M）"""
+    billion = 1_000_000_000
+    million = 1_000_000
+    
+    if number >= billion:
+        return f"${number/billion:.2f}B"
+    elif number >= million:
+        return f"${number/million:.2f}M"
+    else:
+        return f"${number:,.2f}"
+
 def format_ethena_data(ethena_data, is_change=False):
     """格式化Ethena数据"""
     if not ethena_data:
@@ -171,20 +183,22 @@ def format_ethena_data(ethena_data, is_change=False):
             trend = "📈" if ch['change_pct'] > 0 else "📉"
             if key == 'protocol_yield':
                 message_parts.append(
-                    f"📈 协议收益率: {ch['old']:.2f}% => {ch['new']:.2f}% {trend} ({ch['change_pct']:+.2f}%)"
+                    f"📈 协议收益率: {ch['old']:.2f}% ➡️ {ch['new']:.2f}% {trend} ({ch['change_pct']:+.2f}%)"
                 )
             elif key == 'staking_yield':
                 message_parts.append(
-                    f"📊 质押收益率: {ch['old']:.2f}% => {ch['new']:.2f}% {trend} ({ch['change_pct']:+.2f}%)"
+                    f"📊 质押收益率: {ch['old']:.2f}% ➡️ {ch['new']:.2f}% {trend} ({ch['change_pct']:+.2f}%)"
                 )
             elif key == 'tvl':
+                old_tvl = format_number_to_readable(ch['old'])
+                new_tvl = format_number_to_readable(ch['new'])
                 message_parts.append(
-                    f"💎 TVL: ${ch['old']:,.2f} => ${ch['new']:,.2f} {trend} ({ch['change_pct']:+.2f}%)"
+                    f"💎 TVL: {old_tvl} ➡️ {new_tvl} {trend} ({ch['change_pct']:+.2f}%)"
                 )
     else:
         message_parts.append(f"📈 协议收益率: {ethena_data['protocol_yield']:.2f}%")
         message_parts.append(f"📊 质押收益率: {ethena_data['staking_yield']:.2f}%")
-        message_parts.append(f"💎 TVL: ${ethena_data['tvl']:,.2f}")
+        message_parts.append(f"💎 TVL: {format_number_to_readable(ethena_data['tvl'])}")
     
     message_parts.append("")
     return message_parts
@@ -202,7 +216,7 @@ def format_sentiment_data(sentiment_data, analysis, is_change=False):
             ch = sentiment_data['ahr999']
             trend = "📈" if ch['new'] > ch['old'] else "📉"
             message_parts.append(
-                f"📉 AHR999指数: {ch['old']:.2f} => {ch['new']:.2f} {trend}"
+                f"📉 AHR999指数: {ch['old']:.2f} ➡️ {ch['new']:.2f} {trend}"
             )
             if analysis['ahr999']:
                 message_parts.append(analysis['ahr999'])
@@ -211,7 +225,7 @@ def format_sentiment_data(sentiment_data, analysis, is_change=False):
             ch = sentiment_data['fear_greed']
             trend = "📈" if ch['new'] > ch['old'] else "📉"
             message_parts.append(
-                f"😱 恐慌贪婪指数: {ch['old']} => {ch['new']} {trend}"
+                f"😱 恐慌贪婪指数: {ch['old']} ➡️ {ch['new']} {trend}"
             )
             if analysis['fear_greed']:
                 message_parts.append(analysis['fear_greed'])
@@ -227,76 +241,72 @@ def format_sentiment_data(sentiment_data, analysis, is_change=False):
     message_parts.append("")
     return message_parts
 
-def generate_alert_message(ethena_data, market_data, data_store):
-    """生成告警消息"""
-    now = datetime.now()
-    previous_data = data_store.get_last_data()
+def generate_monitor_message(ethena_data, market_data, data_store=None, is_first_run=False):
+    """生成监控消息
     
-    # 构建当前数据结构
-    current_data = {
-        'timestamp': now.strftime('%Y-%m-%d %H:%M:%S'),
-        'ethena': ethena_data,
-        'market': {
-            'btc': {
-                'price': market_data.get('btc_price')
-            },
-            'sentiment': {
-                'ahr999': market_data.get('ahr999'),
-                'fear_greed': market_data.get('fear_greed')
+    Args:
+        ethena_data: Ethena协议数据
+        market_data: 市场数据
+        data_store: 数据存储对象,用于计算变化(可选)
+        is_first_run: 是否为首次运行(默认False)
+    """
+    now = datetime.now()
+    next_update = now + timedelta(seconds=INTERVAL)
+    
+    # 计算数据变化(如果不是首次运行且提供了data_store)
+    changes = None
+    if not is_first_run and data_store:
+        previous_data = data_store.get_last_data()
+        current_data = {
+            'timestamp': now.strftime('%Y-%m-%d %H:%M:%S'),
+            'ethena': ethena_data,
+            'market': {
+                'btc': {
+                    'price': market_data.get('btc_price')
+                },
+                'sentiment': {
+                    'ahr999': market_data.get('ahr999'),
+                    'fear_greed': market_data.get('fear_greed')
+                }
             }
         }
-    }
+        changes = data_store.calculate_changes(previous_data, current_data)
     
-    changes = data_store.calculate_changes(previous_data, current_data)
+    # 生成市场分析
     analysis = analyze_market_data({
         'ahr999': market_data.get('ahr999'),
         'fear_greed': market_data.get('fear_greed')
     })
     
+    # 构建消息
     message_parts = [
-        "📊 【每日市场监控报告】",
+        f"📊 【{'市场监控初始化报告' if is_first_run else '每日市场监控报告'}】",
         f"🕐 时间: {now.strftime('%Y-%m-%d %H:%M:%S')}\n"
+        f"⏰ 下次更新时间: {next_update.strftime('%Y-%m-%d %H:%M:%S')}"
     ]
     
-    # BTC价格变化
+    # BTC价格信息
     if changes and 'market' in changes and 'btc' in changes['market']:
         btc_changes = changes['market']['btc']
         if 'price' in btc_changes:
             message_parts.extend(format_btc_price(btc_changes['price'], True))
-    
-    # Ethena数据变化
-    if changes and 'ethena' in changes:
-        message_parts.extend(format_ethena_data(changes['ethena'], True))
-    
-    # 市场情绪数据变化
-    if changes and 'market' in changes and 'sentiment' in changes['market']:
-        message_parts.extend(format_sentiment_data(changes['market']['sentiment'], analysis, True))
-    
-    return "\n".join(message_parts)
-
-async def generate_first_run_message(ethena_data, market_data):
-    """生成首次运行的消息"""
-    now = datetime.now()
-    analysis = analyze_market_data({
-        'ahr999': market_data.get('ahr999'),
-        'fear_greed': market_data.get('fear_greed')
-    })
-    
-    message_parts = [
-        "📊 【市场监控初始化报告】",
-        f"🕐 时间: {now.strftime('%Y-%m-%d %H:%M:%S')}\n"
-    ]
-    
-    # BTC价格
-    if market_data and market_data.get('btc_price'):
+    elif market_data and market_data.get('btc_price'):
         message_parts.extend(format_btc_price(market_data['btc_price']))
     
     # Ethena数据
-    if ethena_data:
+    if changes and 'ethena' in changes:
+        message_parts.extend(format_ethena_data(changes['ethena'], True))
+    elif ethena_data:
         message_parts.extend(format_ethena_data(ethena_data))
     
     # 市场情绪数据
-    if market_data:
+    if changes and 'market' in changes and 'sentiment' in changes['market']:
+        message_parts.extend(format_sentiment_data(
+            changes['market']['sentiment'], 
+            analysis, 
+            True
+        ))
+    elif market_data:
         sentiment_data = {
             'ahr999': market_data.get('ahr999'),
             'fear_greed': market_data.get('fear_greed')
@@ -339,7 +349,7 @@ async def daily_monitor():
         try:
             current_time = datetime.now()
             
-            # 检查是否需要更新
+            # 检查是否需���更新
             if last_update_time:
                 time_diff = (current_time - last_update_time).total_seconds()
                 if time_diff < INTERVAL:
@@ -368,24 +378,31 @@ async def daily_monitor():
                 
                 # 获取上次的数据
                 previous_data = data_store.get_last_data()
+
+                # 生成消��
+                if previous_data:
+                    print("生成数据对比消息...")
+                    message = generate_monitor_message(
+                        ethena_data, 
+                        sentiment_data,
+                        data_store=data_store
+                    )
+                else:
+                    print("首次运行，生成初始状态消息...")
+                    message = generate_monitor_message(
+                            ethena_data,
+                            sentiment_data,
+                            is_first_run=True
+                        )
+                    
+                # 发送消息
+                if message:
+                    await send_message_async(message)
                 
                 # 保存新数据
                 if data_store.save_data(ethena_data, sentiment_data):
                     print("\n数据保存成功")
                     
-                    # 生成消息
-                    if previous_data:
-                        print("生成数据对比消息...")
-                        message = generate_alert_message(ethena_data, sentiment_data, data_store)
-                    else:
-                        print("首次运行，生成初始状态消息...")
-                        message = await generate_first_run_message(ethena_data, sentiment_data)
-                    
-                    # 发送消息
-                    if message:
-                        await send_message_async(message)
-                    else:
-                        print("消息生成失败")
                 else:
                     print("数据保存失败")
                 
