@@ -6,8 +6,10 @@ class DataStore:
     def __init__(self):
         """初始化数据存储"""
         self.data_file = "data/last_data.json"
+        self.history_file = "data/history.txt"  # 新增历史记录文件
         print(f"\n初始化数据存储...")
         print(f"数据文件路径: {os.path.abspath(self.data_file)}")
+        print(f"历史记录文件路径: {os.path.abspath(self.history_file)}")
         self.ensure_data_dir()
     
     def ensure_data_dir(self):
@@ -61,25 +63,100 @@ class DataStore:
             print("\n保存的数据内容:")
             print("="*50)
             print(f"时间: {data['timestamp']}\n")
-            print("Ethena数据:")
-            print(f"📈 协议收益率: {data['ethena']['protocol_yield']:.2f}%")
-            print(f"📊 质押收益率: {data['ethena']['staking_yield']:.2f}%")
-            print(f"💎 TVL: ${data['ethena']['tvl']:,.2f}\n")
-            print("BTC数据:")
-            print(f"💰 BTC价格: ${data['market']['btc']['price']:,.2f}\n")
+            
+            # 打印Ethena数据
+            if data['ethena']:
+                print("Ethena数据:")
+                print(f"📈 协议收益率: {data['ethena']['protocol_yield']:.2f}%")
+                print(f"📊 质押收益率: {data['ethena']['staking_yield']:.2f}%")
+                print(f"💎 TVL: ${data['ethena']['tvl']:,.2f}\n")
+            else:
+                print("Ethena数据: 无\n")
+            
+            # 打印BTC数据
+            if data['market']['btc']['price'] is not None:
+                print("BTC数据:")
+                print(f"💰 BTC价格: ${data['market']['btc']['price']:,.2f}\n")
+            else:
+                print("BTC数据: 无\n")
+            
+            # 打印市场情绪数据
             print("市场情绪数据:")
-            print(f"📉 AHR999指数: {data['market']['sentiment']['ahr999']:.4f}")
-            print(f"😱 恐慌贪婪指数: {data['market']['sentiment']['fear_greed']}")
+            if data['market']['sentiment']['ahr999'] is not None:
+                print(f"📉 AHR999指数: {data['market']['sentiment']['ahr999']:.4f}")
+            else:
+                print("📉 AHR999指数: 无")
+                
+            if data['market']['sentiment']['fear_greed'] is not None:
+                print(f"😱 恐慌贪婪指数: {data['market']['sentiment']['fear_greed']}")
+            else:
+                print("😱 恐慌贪婪指数: 无")
             print("="*50)
             
-            # 保存到文件
+            # 保存到JSON文件
             with open(self.data_file, 'w') as f:
                 json.dump(data, f, indent=2)
+            
+            # 保存到历史记录文件
+            self.save_to_history_file(data)
             
             print("数据已成功保存\n")
             return True
         except Exception as e:
             print(f"保存数据出错: {str(e)}")
+            return False
+    
+    def save_to_history_file(self, data):
+        """将数据保存到历史记录文件，在文件最前方插入一条记录"""
+        try:
+            # 格式化数据为易读的文本格式
+            timestamp = data['timestamp']
+            record_lines = [
+                f"===== {timestamp} ====="
+            ]
+            
+            # BTC数据
+            if data['market']['btc']['price'] is not None:
+                record_lines.append(f"BTC: ${data['market']['btc']['price']:,.0f}")
+            else:
+                record_lines.append("BTC: 无数据")
+            
+            # Ethena数据
+            if data['ethena']:
+                record_lines.append(f"Ethena协议收益: {data['ethena']['protocol_yield']:.2f}%")
+                record_lines.append(f"Ethena质押收益: {data['ethena']['staking_yield']:.2f}%")
+                record_lines.append(f"Ethena TVL: ${data['ethena']['tvl']:,.0f}")
+            else:
+                record_lines.append("Ethena: 无数据")
+            
+            # 市场情绪数据
+            if data['market']['sentiment']['ahr999'] is not None:
+                record_lines.append(f"AHR999: {data['market']['sentiment']['ahr999']:.2f}")
+            else:
+                record_lines.append("AHR999: 无数据")
+            
+            if data['market']['sentiment']['fear_greed'] is not None:
+                record_lines.append(f"恐慌贪婪: {data['market']['sentiment']['fear_greed']}")
+            else:
+                record_lines.append("恐慌贪婪: 无数据")
+            
+            record_lines.append("=" * 30)
+            record_text = "\n".join(record_lines) + "\n\n"
+            
+            # 读取现有文件内容
+            existing_content = ""
+            if os.path.exists(self.history_file):
+                with open(self.history_file, 'r', encoding='utf-8') as f:
+                    existing_content = f.read()
+            
+            # 将新记录插入到文件最前方
+            with open(self.history_file, 'w', encoding='utf-8') as f:
+                f.write(record_text + existing_content)
+            
+            print(f"历史记录已保存到: {self.history_file}")
+            return True
+        except Exception as e:
+            print(f"保存历史记录出错: {str(e)}")
             return False
     
     def validate_data(self, data):
@@ -132,7 +209,8 @@ class DataStore:
             
             # BTC价格变化
             if ('btc' in old_data['market'] and 'btc' in new_data['market'] and
-                'price' in old_data['market']['btc'] and 'price' in new_data['market']['btc']):
+                'price' in old_data['market']['btc'] and 'price' in new_data['market']['btc'] and
+                old_data['market']['btc']['price'] is not None and new_data['market']['btc']['price'] is not None):
                 old_price = float(old_data['market']['btc']['price'])
                 new_price = float(new_data['market']['btc']['price'])
                 change_pct = ((new_price - old_price) / old_price) * 100
@@ -149,7 +227,9 @@ class DataStore:
                 sentiment_changes = {}
                 for key in ['ahr999', 'fear_greed']:
                     if (key in old_data['market']['sentiment'] and 
-                        key in new_data['market']['sentiment']):
+                        key in new_data['market']['sentiment'] and
+                        old_data['market']['sentiment'][key] is not None and 
+                        new_data['market']['sentiment'][key] is not None):
                         old_val = float(old_data['market']['sentiment'][key])
                         new_val = float(new_data['market']['sentiment'][key])
                         sentiment_changes[key] = {

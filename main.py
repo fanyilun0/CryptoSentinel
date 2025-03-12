@@ -10,7 +10,6 @@ from config import (
     WEBHOOK_URL,
     PROXY_URL,
     USE_PROXY,
-    MONITOR_CONFIG,
     INTERVAL
 )
 
@@ -50,12 +49,49 @@ async def get_ethena_data(session):
 
 async def get_btc_price(session):
     """获取BTC当前价格"""
+    # 使用主API (Binance)
     try:
-        price_data = await fetch_data(session, MARKET_SENTIMENT['btc_price_url'])
-        if price_data and 'bpi' in price_data:
-            return price_data['bpi']['USD']['rate_float']
+        primary_api = MARKET_SENTIMENT['btc_price_apis']['primary']
+        print(f"尝试使用主API ({primary_api['name']}) 获取BTC价格...")
+        price_data = await fetch_data(session, primary_api['url'])
+        
+        if price_data:
+            # 根据price_key_path从响应中提取价格
+            value = price_data
+            for key in primary_api['price_key_path']:
+                if key in value:
+                    value = value[key]
+                else:
+                    raise KeyError(f"在响应中找不到键: {key}")
+            
+            price = float(value)
+            print(f"成功从{primary_api['name']}获取BTC价格: ${price:,.2f}")
+            return price
     except Exception as e:
-        print(f"获取BTC价格数据出错: {str(e)}")
+        print(f"主API ({primary_api['name']}) 获取BTC价格失败: {str(e)}")
+    
+    # 使用备用API (CoinGecko)
+    try:
+        backup_api = MARKET_SENTIMENT['btc_price_apis']['backup']
+        print(f"尝试使用备用API ({backup_api['name']}) 获取BTC价格...")
+        price_data = await fetch_data(session, backup_api['url'])
+        
+        if price_data:
+            # 根据price_key_path从响应中提取价格
+            value = price_data
+            for key in backup_api['price_key_path']:
+                if key in value:
+                    value = value[key]
+                else:
+                    raise KeyError(f"在响应中找不到键: {key}")
+            
+            price = float(value)
+            print(f"成功从{backup_api['name']}获取BTC价格: ${price:,.2f}")
+            return price
+    except Exception as e:
+        print(f"备用API ({backup_api['name']}) 获取BTC价格失败: {str(e)}")
+    
+    print("所有BTC价格API都失败了")
     return None
 
 async def get_market_sentiment(session):
@@ -119,41 +155,60 @@ def analyze_market_data(data):
         return analysis
     
     # AHR999分析
-    if 'ahr999' in data:
+    if 'ahr999' in data and data['ahr999'] is not None:
         ahr999 = data['ahr999']
-        if ahr999 < 0.45:
-            analysis['ahr999'] = "💡 当前处于抄底区域，可以考虑买入"
-        elif ahr999 < 1.2:
-            analysis['ahr999'] = "💡 当前处于适合定投区域"
+        ahr999_thresholds = MARKET_SENTIMENT['thresholds']['ahr999']
+        ahr999_suggestions = MARKET_SENTIMENT['suggestions']['ahr999']
+        
+        # 根据AHR999值确定区间
+        if ahr999 < ahr999_thresholds['extreme_value']:
+            analysis['ahr999'] = f"💡 {ahr999_suggestions['extreme_value_zone']['desc']}"
+        elif ahr999 < ahr999_thresholds['oversold']:
+            analysis['ahr999'] = f"💡 {ahr999_suggestions['bottom_zone']['desc']}"
+        elif ahr999 < ahr999_thresholds['fair_value']:
+            analysis['ahr999'] = f"💡 {ahr999_suggestions['accumulation_zone']['desc']}"
+        elif ahr999 < ahr999_thresholds['overbought']:
+            analysis['ahr999'] = f"💡 {ahr999_suggestions['fair_value_zone']['desc']}"
+        elif ahr999 < ahr999_thresholds['extreme_bubble']:
+            analysis['ahr999'] = f"💡 {ahr999_suggestions['profit_taking_zone']['desc']}"
         else:
-            analysis['ahr999'] = "💡 当前币价较高，需要谨慎"
+            analysis['ahr999'] = f"💡 {ahr999_suggestions['bubble_zone']['desc']}"
     
     # 恐慌贪婪指数分析
-    if 'fear_greed' in data:
+    if 'fear_greed' in data and data['fear_greed'] is not None:
         fear_greed = data['fear_greed']
-        if fear_greed < 20:
-            analysis['fear_greed'] = "💡 市场极度恐慌，可能是买入机会"
-        elif fear_greed > 80:
-            analysis['fear_greed'] = "💡 市场极度贪婪，注意风险"
+        fg_thresholds = MARKET_SENTIMENT['thresholds']['fear_greed']
+        fg_suggestions = MARKET_SENTIMENT['suggestions']['fear_greed']
+        
+        # 根据恐慌贪婪指数确定区间
+        if fear_greed < fg_thresholds['extreme_fear']:
+            analysis['fear_greed'] = f"💡 {fg_suggestions['extreme_fear']['desc']}"
+        elif fear_greed < fg_thresholds['fear']:
+            analysis['fear_greed'] = f"💡 {fg_suggestions['fear']['desc']}"
+        elif fear_greed < fg_thresholds['neutral']:
+            analysis['fear_greed'] = f"💡 {fg_suggestions['neutral']['desc']}"
+        elif fear_greed < fg_thresholds['greed']:
+            analysis['fear_greed'] = f"💡 {fg_suggestions['greed']['desc']}"
+        else:
+            analysis['fear_greed'] = f"💡 {fg_suggestions['extreme_greed']['desc']}"
     
     return analysis
 
 def format_btc_price(price_data, is_change=False):
     """格式化BTC价格信息"""
     if not price_data:
-        return []
+        return ["💰 BTC: 无法获取", ""]
     
     message_parts = []
     if is_change:
         trend = "📈" if price_data['change_pct'] > 0 else "📉"
-        message_parts.append("💰 BTC价格变化:")
+        message_parts.append("💰 BTC:")
         message_parts.append(
-            f"当前价格: ${price_data['new']:,.2f} {trend} ({price_data['change_pct']:+.2f}%)\n"
-            f"上次价格: ${price_data['old']:,.2f}"
+            f"${price_data['new']:,.0f} {trend} ({price_data['change_pct']:+.2f}%)"
         )
     else:
-        message_parts.append("💰 BTC市场状态:")
-        message_parts.append(f"当前价格: ${price_data:,.2f}")
+        message_parts.append("💰 BTC:")
+        message_parts.append(f"${price_data:,.0f}")
     
     message_parts.append("")
     return message_parts
@@ -176,29 +231,28 @@ def format_ethena_data(ethena_data, is_change=False):
         return []
     
     message_parts = []
-    message_parts.append("💰 Ethena协议" + ("数据变化:" if is_change else "当前状态:"))
+    message_parts.append("💰 Ethena:")
     
     if is_change:
         for key, ch in ethena_data.items():
             trend = "📈" if ch['change_pct'] > 0 else "📉"
             if key == 'protocol_yield':
                 message_parts.append(
-                    f"📈 协议收益率: {ch['old']:.2f}% ➡️ {ch['new']:.2f}% {trend} ({ch['change_pct']:+.2f}%)"
+                    f"协议收益: {ch['new']:.2f}% {trend} ({ch['change_pct']:+.2f}%)"
                 )
             elif key == 'staking_yield':
                 message_parts.append(
-                    f"📊 质押收益率: {ch['old']:.2f}% ➡️ {ch['new']:.2f}% {trend} ({ch['change_pct']:+.2f}%)"
+                    f"质押收益: {ch['new']:.2f}% {trend} ({ch['change_pct']:+.2f}%)"
                 )
             elif key == 'tvl':
-                old_tvl = format_number_to_readable(ch['old'])
                 new_tvl = format_number_to_readable(ch['new'])
                 message_parts.append(
-                    f"💎 TVL: {old_tvl} ➡️ {new_tvl} {trend} ({ch['change_pct']:+.2f}%)"
+                    f"TVL: {new_tvl} {trend} ({ch['change_pct']:+.2f}%)"
                 )
     else:
-        message_parts.append(f"📈 协议收益率: {ethena_data['protocol_yield']:.2f}%")
-        message_parts.append(f"📊 质押收益率: {ethena_data['staking_yield']:.2f}%")
-        message_parts.append(f"💎 TVL: {format_number_to_readable(ethena_data['tvl'])}")
+        message_parts.append(f"协议收益: {ethena_data['protocol_yield']:.2f}%")
+        message_parts.append(f"质押收益: {ethena_data['staking_yield']:.2f}%")
+        message_parts.append(f"TVL: {format_number_to_readable(ethena_data['tvl'])}")
     
     message_parts.append("")
     return message_parts
@@ -206,37 +260,42 @@ def format_ethena_data(ethena_data, is_change=False):
 def format_sentiment_data(sentiment_data, analysis, is_change=False):
     """格式化市场情绪数据"""
     if not sentiment_data:
-        return []
+        return ["🎯 市场情绪: 无法获取", ""]
     
     message_parts = []
-    message_parts.append("🎯 市场情绪指标" + ("变化:" if is_change else ":"))
+    message_parts.append("🎯 市场情绪:")
     
-    if is_change:
-        if 'ahr999' in sentiment_data:
-            ch = sentiment_data['ahr999']
-            trend = "📈" if ch['new'] > ch['old'] else "📉"
-            message_parts.append(
-                f"📉 AHR999指数: {ch['old']:.2f} ➡️ {ch['new']:.2f} {trend}"
-            )
-            if analysis['ahr999']:
-                message_parts.append(analysis['ahr999'])
-        
-        if 'fear_greed' in sentiment_data:
-            ch = sentiment_data['fear_greed']
-            trend = "📈" if ch['new'] > ch['old'] else "📉"
-            message_parts.append(
-                f"😱 恐慌贪婪指数: {ch['old']} ➡️ {ch['new']} {trend}"
-            )
-            if analysis['fear_greed']:
-                message_parts.append(analysis['fear_greed'])
+    # AHR999指数部分
+    if is_change and 'ahr999' in sentiment_data:
+        ch = sentiment_data['ahr999']
+        trend = "📈" if ch['new'] > ch['old'] else "📉"
+        message_parts.append(
+            f"AHR999: {ch['new']:.2f} {trend}"
+        )
+    elif sentiment_data.get('ahr999') is not None:
+        message_parts.append(f"AHR999: {sentiment_data['ahr999']:.2f}")
     else:
-        message_parts.append(f"AHR999指数: {sentiment_data['ahr999']:.4f}")
-        if analysis['ahr999']:
-            message_parts.append(analysis['ahr999'])
-        
-        message_parts.append(f"恐慌贪婪指数: {sentiment_data['fear_greed']}")
-        if analysis['fear_greed']:
-            message_parts.append(analysis['fear_greed'])
+        message_parts.append("AHR999: 无法获取")
+    
+    # 始终添加AHR999建议（如果有）
+    if analysis['ahr999']:
+        message_parts.append(analysis['ahr999'])
+    
+    # 恐慌贪婪指数部分
+    if is_change and 'fear_greed' in sentiment_data:
+        ch = sentiment_data['fear_greed']
+        trend = "📈" if ch['new'] > ch['old'] else "📉"
+        message_parts.append(
+            f"恐慌贪婪: {ch['new']} {trend}"
+        )
+    elif sentiment_data.get('fear_greed') is not None:
+        message_parts.append(f"恐慌贪婪: {sentiment_data['fear_greed']}")
+    else:
+        message_parts.append("恐慌贪婪: 无法获取")
+    
+    # 始终添加恐慌贪婪指数建议（如果有）
+    if analysis['fear_greed']:
+        message_parts.append(analysis['fear_greed'])
     
     message_parts.append("")
     return message_parts
@@ -280,9 +339,7 @@ def generate_monitor_message(ethena_data, market_data, data_store=None, is_first
     
     # 构建消息
     message_parts = [
-        f"📊 【{'市场监控初始化报告' if is_first_run else '每日市场监控报告'}】",
-        f"🕐 时间: {now.strftime('%Y-%m-%d %H:%M:%S')}\n"
-        f"⏰ 下次更新时间: {next_update.strftime('%Y-%m-%d %H:%M:%S')}"
+        f"📊 {now.strftime('%Y-%m-%d %H:%M')} 市场监控"
     ]
     
     # BTC价格信息
@@ -292,12 +349,6 @@ def generate_monitor_message(ethena_data, market_data, data_store=None, is_first
             message_parts.extend(format_btc_price(btc_changes['price'], True))
     elif market_data and market_data.get('btc_price'):
         message_parts.extend(format_btc_price(market_data['btc_price']))
-    
-    # Ethena数据
-    if changes and 'ethena' in changes:
-        message_parts.extend(format_ethena_data(changes['ethena'], True))
-    elif ethena_data:
-        message_parts.extend(format_ethena_data(ethena_data))
     
     # 市场情绪数据
     if changes and 'market' in changes and 'sentiment' in changes['market']:
@@ -312,6 +363,12 @@ def generate_monitor_message(ethena_data, market_data, data_store=None, is_first
             'fear_greed': market_data.get('fear_greed')
         }
         message_parts.extend(format_sentiment_data(sentiment_data, analysis))
+    
+    # Ethena数据 (放在最后)
+    if changes and 'ethena' in changes:
+        message_parts.extend(format_ethena_data(changes['ethena'], True))
+    elif ethena_data:
+        message_parts.extend(format_ethena_data(ethena_data))
     
     return "\n".join(message_parts)
 
@@ -349,7 +406,7 @@ async def daily_monitor():
         try:
             current_time = datetime.now()
             
-            # 检查是否需���更新
+            # 检查是否需要更新
             if last_update_time:
                 time_diff = (current_time - last_update_time).total_seconds()
                 if time_diff < INTERVAL:
@@ -365,21 +422,29 @@ async def daily_monitor():
                 if ethena_data:
                     print(f"成功获取Ethena数据: {json.dumps(ethena_data, indent=2)}")
                 else:
-                    print("获取Ethena数据失败")
-                    continue
+                    print("获取Ethena数据失败，将使用空数据继续")
+                    ethena_data = {
+                        'protocol_yield': 0,
+                        'staking_yield': 0,
+                        'tvl': 0
+                    }
                 
                 print("\n正在获取市场情绪数据...")
                 sentiment_data = await get_market_sentiment(session)
                 if sentiment_data:
                     print(f"成功获取市场情绪数据: {json.dumps(sentiment_data, indent=2)}")
                 else:
-                    print("获取市场情绪数据失败")
-                    continue
+                    print("获取市场情绪数据失败，将使用空数据继续")
+                    sentiment_data = {
+                        'ahr999': None,
+                        'fear_greed': None,
+                        'btc_price': None
+                    }
                 
                 # 获取上次的数据
                 previous_data = data_store.get_last_data()
 
-                # 生成消��
+                # 生成消息
                 if previous_data:
                     print("生成数据对比消息...")
                     message = generate_monitor_message(
@@ -412,6 +477,8 @@ async def daily_monitor():
             print(f"监控过程出错: {str(e)}")
             import traceback
             print(f"详细错误信息: {traceback.format_exc()}")
+            # 即使出错，也更新last_update_time，避免频繁重试
+            last_update_time = current_time
         
         print(f"\n等待{INTERVAL}秒后进行下一轮检查...")
         await asyncio.sleep(1)

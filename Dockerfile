@@ -1,5 +1,6 @@
 # 使用自定义私有Docker镜像仓库
-FROM docker.dadunode.com/python:3.9-slim
+# FROM docker.dadunode.com/python:3.9-slim
+FROM python:3.9-slim
 
 # 设置环境变量，禁用Python的输出缓冲
 ENV PYTHONUNBUFFERED=1

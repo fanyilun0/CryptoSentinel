@@ -38,87 +38,82 @@ MARKET_SENTIMENT = {
         'webp': 1
     },
     'fear_greed_url': 'https://api.alternative.me/fng/',
-    'btc_price_url': 'https://api.coindesk.com/v1/bpi/currentprice.json',
-    'fear_greed_alerts': {
-        'extreme_fear': 20,  # 极度恐慌阈值
-        'extreme_greed': 80  # 极度贪婪阈值
-    },
-    'fear_greed_suggestions': {
-        'extreme_fear': {
-            'range': [0, 20],
-            'desc': '市场极度恐慌,可能是较好的买入机会'
+    'btc_price_apis': {
+        'primary': {
+            'name': 'Binance',
+            'url': 'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT',
+            'price_key_path': ['price']  # 用于从响应中提取价格的键路径
         },
-        'fear': {
-            'range': [20, 40],
-            'desc': '市场恐慌,可考虑逐步买入'
-        },
-        'neutral': {
-            'range': [40, 60],
-            'desc': '市场情绪中性,可以考虑定投'
-        },
-        'greed': {
-            'range': [60, 80],
-            'desc': '市场贪婪,注意风险,可以考虑减仓'
-        },
-        'extreme_greed': {
-            'range': [80, 100],
-            'desc': '市场极度贪婪,建议谨慎,可考虑逐步卖出'
+        'backup': {
+            'name': 'CoinGecko',
+            'url': 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',
+            'price_key_path': ['bitcoin', 'usd']  # 用于从响应中提取价格的键路径
         }
-    }
-}
-
-
-# 数据监控配置
-MONITOR_CONFIG = {
-    'ethena': {
-        'enabled': True,
-        'min_apy_alert': 10.0,  # APY低于此值时报警
-        'min_tvl_alert': 100000000  # TVL低于此值时报警(单位:美元)
     },
-    'market_sentiment': {
-        'enabled': True,
-        'ahr999_extreme_values': {
-            'oversold': 0.45,  # 超卖阈值
-            'overbought': 1.2   # 超买阈值
+    # 阈值配置
+    'thresholds': {
+        'fear_greed': {
+            'extreme_fear': 20,  # 极度恐慌阈值
+            'fear': 40,          # 恐慌阈值
+            'neutral': 60,       # 中性阈值
+            'greed': 80          # 贪婪阈值
         },
-        'ahr999_suggestions': {
+        'ahr999': {
+            'extreme_value': 0.25,  # 极度超卖阈值
+            'oversold': 0.45,       # 超卖阈值
+            'fair_value': 0.8,      # 公允价值阈值
+            'overbought': 1.2,      # 超买阈值
+            'extreme_bubble': 1.8   # 极度泡沫阈值
+        }
+    },
+    # 市场建议配置 - 整合后的建议
+    'suggestions': {
+        'ahr999': {
+            'extreme_value_zone': {
+                'range': [0, 0.25],
+                'desc': '极度低估，强烈买入信号'
+            },
             'bottom_zone': {
-                'range': [0, 0.45],
-                'desc': '当前处于抄底区域,建议适量买入'
+                'range': [0.25, 0.45],
+                'desc': '明显低估，适量买入'
             },
-            'dca_zone': {
-                'range': [0.45, 1.2],
-                'desc': '当前处于价值区间,适合定投操作'  
+            'accumulation_zone': {
+                'range': [0.45, 0.8],
+                'desc': '轻微低估，可定投积累'  
             },
-            'high_zone': {
-                'range': [1.2, float('inf')],
-                'desc': '当前币价较高,不适合操作'
+            'fair_value_zone': {
+                'range': [0.8, 1.2],
+                'desc': '接近公允价值，谨慎定投'
+            },
+            'profit_taking_zone': {
+                'range': [1.2, 1.8],
+                'desc': '轻微高估，可考虑获利了结'
+            },
+            'bubble_zone': {
+                'range': [1.8, float('inf')],
+                'desc': '明显泡沫，建议减仓观望'
             }
         },
-        'fear_greed_alerts': {
-            'extreme_fear': 20,  # 极度恐慌阈值
-            'extreme_greed': 80  # 极度贪婪阈值
-        },
-        'fear_greed_suggestions': {
+        'fear_greed': {
             'extreme_fear': {
                 'range': [0, 20],
-                'desc': '市场极度恐慌,可能是较好的买入机会'
+                'desc': '极度恐慌，可能是买入机会'
             },
             'fear': {
                 'range': [20, 40],
-                'desc': '市场恐慌,可考虑逐步买入'
+                'desc': '市场恐慌，考虑逐步买入'
             },
             'neutral': {
                 'range': [40, 60],
-                'desc': '市场情绪中性,可以考虑定投'
+                'desc': '情绪中性，可定投'
             },
             'greed': {
                 'range': [60, 80],
-                'desc': '市场贪婪,注意风险,可以考虑减仓'
+                'desc': '市场贪婪，注意风险'
             },
             'extreme_greed': {
                 'range': [80, 100],
-                'desc': '市场极度贪婪,建议谨慎,可考虑逐步卖出'
+                'desc': '极度贪婪，谨慎操作'
             }
         }
     }
