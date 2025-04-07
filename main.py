@@ -1,488 +1,313 @@
-import asyncio
-import aiohttp
-from datetime import datetime, timedelta
+#!/usr/bin/env python
+"""
+加密货币监控系统 - 基于历史数据分析并提供买入/卖出建议
+支持分析BTC价格、AHR999指数和恐惧贪婪指数
+"""
+
+import os
+import sys
 import json
-from store import DataStore
-from config import (
-    DEFILLAMA_API, 
-    ETHENA_API, 
-    MARKET_SENTIMENT, 
-    WEBHOOK_URL,
-    PROXY_URL,
-    USE_PROXY,
-    INTERVAL
-)
+import asyncio
+import logging
+import platform
+from datetime import datetime
+import argparse
 
-async def fetch_data(session, url, params=None):
-    """通用数据获取函数"""
-    try:
-        proxy = PROXY_URL if USE_PROXY else None
-        async with session.get(url, params=params, proxy=proxy) as response:
-            if response.status == 200:
-                return await response.json()
-            else:
-                print(f"请求失败: {url}, 状态码: {response.status}")
-                return None
-    except Exception as e:
-        print(f"获取数据出错: {url}, 错误: {str(e)}")
-        return None
+# 导入自定义模块
+from utils.historical_data import HistoricalDataCollector
+from utils.trend_analyzer import TrendAnalyzer
+from utils.data_reorganizer import reorganize_data, fix_data_file
 
-async def get_ethena_data(session):
-    """获取Ethena协议数据"""
-    try:
-        # 获取收益率数据
-        yield_data = await fetch_data(session, ETHENA_API['yield_url'])
-        
-        # 获取TVL数据
-        tvl_url = f"{DEFILLAMA_API['base_url']}{DEFILLAMA_API['ethena_endpoint']}"
-        tvl_data = await fetch_data(session, tvl_url)
-        
-        if yield_data and tvl_data:
-            return {
-                'protocol_yield': yield_data['protocolYield']['value'],
-                'staking_yield': yield_data['stakingYield']['value'],
-                'tvl': tvl_data['tvl'][-1]['totalLiquidityUSD']
-            }
-    except Exception as e:
-        print(f"获取Ethena数据出错: {str(e)}")
-    return None
+# 从新的AI模块导入DeepseekAdvisor
+from ai.advisor import DeepseekAdvisor
 
-async def get_btc_price(session):
-    """获取BTC当前价格"""
-    # 使用主API (Binance)
-    try:
-        primary_api = MARKET_SENTIMENT['btc_price_apis']['primary']
-        print(f"尝试使用主API ({primary_api['name']}) 获取BTC价格...")
-        price_data = await fetch_data(session, primary_api['url'])
-        
-        if price_data:
-            # 根据price_key_path从响应中提取价格
-            value = price_data
-            for key in primary_api['price_key_path']:
-                if key in value:
-                    value = value[key]
-                else:
-                    raise KeyError(f"在响应中找不到键: {key}")
-            
-            price = float(value)
-            print(f"成功从{primary_api['name']}获取BTC价格: ${price:,.2f}")
-            return price
-    except Exception as e:
-        print(f"主API ({primary_api['name']}) 获取BTC价格失败: {str(e)}")
-    
-    # 使用备用API (CoinGecko)
-    try:
-        backup_api = MARKET_SENTIMENT['btc_price_apis']['backup']
-        print(f"尝试使用备用API ({backup_api['name']}) 获取BTC价格...")
-        price_data = await fetch_data(session, backup_api['url'])
-        
-        if price_data:
-            # 根据price_key_path从响应中提取价格
-            value = price_data
-            for key in backup_api['price_key_path']:
-                if key in value:
-                    value = value[key]
-                else:
-                    raise KeyError(f"在响应中找不到键: {key}")
-            
-            price = float(value)
-            print(f"成功从{backup_api['name']}获取BTC价格: ${price:,.2f}")
-            return price
-    except Exception as e:
-        print(f"备用API ({backup_api['name']}) 获取BTC价格失败: {str(e)}")
-    
-    print("所有BTC价格API都失败了")
-    return None
-
-async def get_market_sentiment(session):
-    """获取市场情绪指标"""
-    try:
-        # 获取AHR999指数
-        ahr999_data = await fetch_data(
-            session, 
-            MARKET_SENTIMENT['ahr999_url'], 
-            MARKET_SENTIMENT['ahr999_params']
-        )
-        
-        # 获取恐慌贪婪指数
-        fear_greed_data = await fetch_data(session, MARKET_SENTIMENT['fear_greed_url'])
-        
-        # 获取BTC价格
-        btc_price = await get_btc_price(session)
-        
-        # 更安全的数据提取方式
-        ahr999_value = None
-        fear_greed_value = None
-        
-        # 处理AHR999数据
-        if ahr999_data and isinstance(ahr999_data, dict):
-            try:
-                if ('data' in ahr999_data and 
-                    isinstance(ahr999_data['data'], list) and 
-                    len(ahr999_data['data']) > 0):
-                    # 获取最后一条记录的第二个值
-                    ahr999_value = float(ahr999_data['data'][-1][1])
-            except (ValueError, TypeError, IndexError) as e:
-                print(f"处理AHR999数据时出错: {str(e)}")
-                ahr999_value = None
-        
-        # 处理Fear & Greed数据
-        if fear_greed_data and isinstance(fear_greed_data, dict):
-            if 'data' in fear_greed_data and fear_greed_data['data']:
-                try:
-                    fear_greed_value = int(fear_greed_data['data'][0]['value'])
-                except (ValueError, TypeError, KeyError, IndexError) as e:
-                    print(f"处理Fear & Greed数据时出错: {str(e)}")
-                    fear_greed_value = None
-        
-        return {
-            'ahr999': ahr999_value,
-            'fear_greed': fear_greed_value,
-            'btc_price': btc_price
-        }
-    except Exception as e:
-        print(f"获取市场情绪数据出错: {str(e)}")
-        return None
-
-def analyze_market_data(data):
-    """分析市场数据并生成建议"""
-    analysis = {
-        'ahr999': None,
-        'fear_greed': None
-    }
-    
-    if not data:
-        return analysis
-    
-    # AHR999分析
-    if 'ahr999' in data and data['ahr999'] is not None:
-        ahr999 = data['ahr999']
-        ahr999_thresholds = MARKET_SENTIMENT['thresholds']['ahr999']
-        ahr999_suggestions = MARKET_SENTIMENT['suggestions']['ahr999']
-        
-        # 根据AHR999值确定区间
-        if ahr999 < ahr999_thresholds['extreme_value']:
-            analysis['ahr999'] = f"💡 {ahr999_suggestions['extreme_value_zone']['desc']}"
-        elif ahr999 < ahr999_thresholds['oversold']:
-            analysis['ahr999'] = f"💡 {ahr999_suggestions['bottom_zone']['desc']}"
-        elif ahr999 < ahr999_thresholds['fair_value']:
-            analysis['ahr999'] = f"💡 {ahr999_suggestions['accumulation_zone']['desc']}"
-        elif ahr999 < ahr999_thresholds['overbought']:
-            analysis['ahr999'] = f"💡 {ahr999_suggestions['fair_value_zone']['desc']}"
-        elif ahr999 < ahr999_thresholds['extreme_bubble']:
-            analysis['ahr999'] = f"💡 {ahr999_suggestions['profit_taking_zone']['desc']}"
-        else:
-            analysis['ahr999'] = f"💡 {ahr999_suggestions['bubble_zone']['desc']}"
-    
-    # 恐慌贪婪指数分析
-    if 'fear_greed' in data and data['fear_greed'] is not None:
-        fear_greed = data['fear_greed']
-        fg_thresholds = MARKET_SENTIMENT['thresholds']['fear_greed']
-        fg_suggestions = MARKET_SENTIMENT['suggestions']['fear_greed']
-        
-        # 根据恐慌贪婪指数确定区间
-        if fear_greed < fg_thresholds['extreme_fear']:
-            analysis['fear_greed'] = f"💡 {fg_suggestions['extreme_fear']['desc']}"
-        elif fear_greed < fg_thresholds['fear']:
-            analysis['fear_greed'] = f"💡 {fg_suggestions['fear']['desc']}"
-        elif fear_greed < fg_thresholds['neutral']:
-            analysis['fear_greed'] = f"💡 {fg_suggestions['neutral']['desc']}"
-        elif fear_greed < fg_thresholds['greed']:
-            analysis['fear_greed'] = f"💡 {fg_suggestions['greed']['desc']}"
-        else:
-            analysis['fear_greed'] = f"💡 {fg_suggestions['extreme_greed']['desc']}"
-    
-    return analysis
-
-def format_btc_price(price_data, is_change=False):
-    """格式化BTC价格信息"""
-    if not price_data:
-        return ["💰 BTC: 无法获取", ""]
-    
-    message_parts = []
-    if is_change:
-        trend = "📈" if price_data['change_pct'] > 0 else "📉"
-        message_parts.append("💰 BTC:")
-        message_parts.append(
-            f"${price_data['new']:,.0f} {trend} ({price_data['change_pct']:+.2f}%)"
-        )
-    else:
-        message_parts.append("💰 BTC:")
-        message_parts.append(f"${price_data:,.0f}")
-    
-    message_parts.append("")
-    return message_parts
-
-def format_number_to_readable(number):
-    """将大数字转换为易读格式（B/M）"""
-    billion = 1_000_000_000
-    million = 1_000_000
-    
-    if number >= billion:
-        return f"${number/billion:.2f}B"
-    elif number >= million:
-        return f"${number/million:.2f}M"
-    else:
-        return f"${number:,.2f}"
-
-def format_ethena_data(ethena_data, is_change=False):
-    """格式化Ethena数据"""
-    if not ethena_data:
-        return []
-    
-    message_parts = []
-    message_parts.append("💰 Ethena:")
-    
-    if is_change:
-        for key, ch in ethena_data.items():
-            trend = "📈" if ch['change_pct'] > 0 else "📉"
-            if key == 'protocol_yield':
-                message_parts.append(
-                    f"协议收益: {ch['new']:.2f}% {trend} ({ch['change_pct']:+.2f}%)"
-                )
-            elif key == 'staking_yield':
-                message_parts.append(
-                    f"质押收益: {ch['new']:.2f}% {trend} ({ch['change_pct']:+.2f}%)"
-                )
-            elif key == 'tvl':
-                new_tvl = format_number_to_readable(ch['new'])
-                message_parts.append(
-                    f"TVL: {new_tvl} {trend} ({ch['change_pct']:+.2f}%)"
-                )
-    else:
-        message_parts.append(f"协议收益: {ethena_data['protocol_yield']:.2f}%")
-        message_parts.append(f"质押收益: {ethena_data['staking_yield']:.2f}%")
-        message_parts.append(f"TVL: {format_number_to_readable(ethena_data['tvl'])}")
-    
-    message_parts.append("")
-    return message_parts
-
-def format_sentiment_data(sentiment_data, analysis, is_change=False):
-    """格式化市场情绪数据"""
-    if not sentiment_data:
-        return ["🎯 市场情绪: 无法获取", ""]
-    
-    message_parts = []
-    message_parts.append("🎯 市场情绪:")
-    
-    # AHR999指数部分
-    if is_change and 'ahr999' in sentiment_data:
-        ch = sentiment_data['ahr999']
-        trend = "📈" if ch['new'] > ch['old'] else "📉"
-        message_parts.append(
-            f"AHR999: {ch['new']:.2f} {trend}"
-        )
-    elif sentiment_data.get('ahr999') is not None:
-        message_parts.append(f"AHR999: {sentiment_data['ahr999']:.2f}")
-    else:
-        message_parts.append("AHR999: 无法获取")
-    
-    # 始终添加AHR999建议（如果有）
-    if analysis['ahr999']:
-        message_parts.append(analysis['ahr999'])
-    
-    # 恐慌贪婪指数部分
-    if is_change and 'fear_greed' in sentiment_data:
-        ch = sentiment_data['fear_greed']
-        trend = "📈" if ch['new'] > ch['old'] else "📉"
-        message_parts.append(
-            f"恐慌贪婪: {ch['new']} {trend}"
-        )
-    elif sentiment_data.get('fear_greed') is not None:
-        message_parts.append(f"恐慌贪婪: {sentiment_data['fear_greed']}")
-    else:
-        message_parts.append("恐慌贪婪: 无法获取")
-    
-    # 始终添加恐慌贪婪指数建议（如果有）
-    if analysis['fear_greed']:
-        message_parts.append(analysis['fear_greed'])
-    
-    message_parts.append("")
-    return message_parts
-
-def generate_monitor_message(ethena_data, market_data, data_store=None, is_first_run=False):
-    """生成监控消息
-    
-    Args:
-        ethena_data: Ethena协议数据
-        market_data: 市场数据
-        data_store: 数据存储对象,用于计算变化(可选)
-        is_first_run: 是否为首次运行(默认False)
-    """
-    now = datetime.now()
-    next_update = now + timedelta(seconds=INTERVAL)
-    
-    # 计算数据变化(如果不是首次运行且提供了data_store)
-    changes = None
-    if not is_first_run and data_store:
-        previous_data = data_store.get_last_data()
-        current_data = {
-            'timestamp': now.strftime('%Y-%m-%d %H:%M:%S'),
-            'ethena': ethena_data,
-            'market': {
-                'btc': {
-                    'price': market_data.get('btc_price')
-                },
-                'sentiment': {
-                    'ahr999': market_data.get('ahr999'),
-                    'fear_greed': market_data.get('fear_greed')
-                }
-            }
-        }
-        changes = data_store.calculate_changes(previous_data, current_data)
-    
-    # 生成市场分析
-    analysis = analyze_market_data({
-        'ahr999': market_data.get('ahr999'),
-        'fear_greed': market_data.get('fear_greed')
-    })
-    
-    # 构建消息
-    message_parts = [
-        f"📊 {now.strftime('%Y-%m-%d %H:%M')} 市场监控"
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler('crypto_monitor.log', mode='a')
     ]
-    
-    # BTC价格信息
-    if changes and 'market' in changes and 'btc' in changes['market']:
-        btc_changes = changes['market']['btc']
-        if 'price' in btc_changes:
-            message_parts.extend(format_btc_price(btc_changes['price'], True))
-    elif market_data and market_data.get('btc_price'):
-        message_parts.extend(format_btc_price(market_data['btc_price']))
-    
-    # 市场情绪数据
-    if changes and 'market' in changes and 'sentiment' in changes['market']:
-        message_parts.extend(format_sentiment_data(
-            changes['market']['sentiment'], 
-            analysis, 
-            True
-        ))
-    elif market_data:
-        sentiment_data = {
-            'ahr999': market_data.get('ahr999'),
-            'fear_greed': market_data.get('fear_greed')
-        }
-        message_parts.extend(format_sentiment_data(sentiment_data, analysis))
-    
-    # Ethena数据 (放在最后)
-    if changes and 'ethena' in changes:
-        message_parts.extend(format_ethena_data(changes['ethena'], True))
-    elif ethena_data:
-        message_parts.extend(format_ethena_data(ethena_data))
-    
-    return "\n".join(message_parts)
+)
+logger = logging.getLogger(__name__)
 
-async def send_message_async(message_content):
-    """发送消息到webhook"""
-    # 打印消息内容
-    print("\n发送的消息内容:")
-    print("="*50)
-    print(message_content)
-    print("="*50)
-    
-    headers = {'Content-Type': 'application/json'}
-    payload = {
-        "msgtype": "text",
-        "text": {
-            "content": message_content
-        }
-    }
-    
-    proxy = PROXY_URL if USE_PROXY else None
-    async with aiohttp.ClientSession() as session:
-        async with session.post(WEBHOOK_URL, json=payload, headers=headers, proxy=proxy) as response:
-            if response.status == 200:
-                print("消息发送成功!")
-            else:
-                print(f"消息发送失败: {response.status}, {await response.text()}")
+# 确保reports目录存在
+os.makedirs("reports", exist_ok=True)
 
-async def daily_monitor():
-    """每日监控主函数"""
-    print("启动每日市场监控...")
-    data_store = DataStore()
-    last_update_time = None
-    
-    while True:
-        try:
-            current_time = datetime.now()
-            
-            # 检查是否需要更新
-            if last_update_time:
-                time_diff = (current_time - last_update_time).total_seconds()
-                if time_diff < INTERVAL:
-                    await asyncio.sleep(1)
-                    continue
-            
-            print(f"\n开始新一轮数据获取... {current_time.strftime('%Y-%m-%d %H:%M:%S')}")
-            
-            async with aiohttp.ClientSession() as session:
-                # 获取数据
-                print("正在获取Ethena数据...")
-                ethena_data = await get_ethena_data(session)
-                if ethena_data:
-                    print(f"成功获取Ethena数据: {json.dumps(ethena_data, indent=2)}")
-                else:
-                    print("获取Ethena数据失败，将使用空数据继续")
-                    ethena_data = {
-                        'protocol_yield': 0,
-                        'staking_yield': 0,
-                        'tvl': 0
-                    }
-                
-                print("\n正在获取市场情绪数据...")
-                sentiment_data = await get_market_sentiment(session)
-                if sentiment_data:
-                    print(f"成功获取市场情绪数据: {json.dumps(sentiment_data, indent=2)}")
-                else:
-                    print("获取市场情绪数据失败，将使用空数据继续")
-                    sentiment_data = {
-                        'ahr999': None,
-                        'fear_greed': None,
-                        'btc_price': None
-                    }
-                
-                # 获取上次的数据
-                previous_data = data_store.get_last_data()
+def clear_screen():
+    """清除屏幕"""
+    if platform.system() == "Windows":
+        os.system("cls")
+    else:
+        os.system("clear")
 
-                # 生成消息
-                if previous_data:
-                    print("生成数据对比消息...")
-                    message = generate_monitor_message(
-                        ethena_data, 
-                        sentiment_data,
-                        data_store=data_store
-                    )
-                else:
-                    print("首次运行，生成初始状态消息...")
-                    message = generate_monitor_message(
-                            ethena_data,
-                            sentiment_data,
-                            is_first_run=True
-                        )
-                    
-                # 发送消息
-                if message:
-                    await send_message_async(message)
-                
-                # 保存新数据
-                if data_store.save_data(ethena_data, sentiment_data):
-                    print("\n数据保存成功")
-                    
-                else:
-                    print("数据保存失败")
-                
-                last_update_time = current_time
-                
-        except Exception as e:
-            print(f"监控过程出错: {str(e)}")
-            import traceback
-            print(f"详细错误信息: {traceback.format_exc()}")
-            # 即使出错，也更新last_update_time，避免频繁重试
-            last_update_time = current_time
+def print_menu():
+    """打印菜单"""
+    print("\n--- 主菜单 ---")
+    print("1. 生成分析报告 (使用缓存数据)")
+    print("2. 更新数据并生成分析报告")
+    print("3. 运行AHR999数据获取工具")
+    print("4. 查看最新报告")
+    print("5. 使用AI顾问 (Deepseek R1模型)")
+    print("6. 退出程序")
+    print("-------------\n")
+
+async def generate_analysis_report(force_update=False):
+    """生成分析报告，基于历史数据提供买入/卖出建议"""
+    logger.info("开始生成分析报告...")
+    
+    # 创建数据目录
+    os.makedirs("data", exist_ok=True)
+    
+    # 初始化历史数据收集器
+    collector = HistoricalDataCollector(data_dir="data")
+    
+    # 获取/更新历史数据
+    if force_update:
+        logger.info("强制更新历史数据...")
+        historical_data = await collector.collect_historical_data()
+    else:
+        logger.info("检查并更新历史数据...")
+        historical_data = await collector.update_historical_data()
+    
+    if not historical_data:
+        logger.error("获取历史数据失败，无法生成分析报告")
+        return False
+    
+    # 数据统计信息
+    btc_count = len(historical_data.get("btc_price", []))
+    ahr_count = len(historical_data.get("ahr999", []))
+    fg_count = len(historical_data.get("fear_greed", []))
+    
+    logger.info(f"获取到的历史数据: BTC价格({btc_count}条), AHR999指数({ahr_count}条), 恐惧贪婪指数({fg_count}条)")
+    
+    # 初始化趋势分析器
+    analyzer = TrendAnalyzer(historical_data)
+    
+    # 生成投资建议
+    advice = analyzer.generate_investment_advice()
+    
+    if advice.get("status") == "error":
+        logger.error(f"生成投资建议失败: {advice.get('message', '未知错误')}")
+        return False
+    
+    # 获取格式化的输出结果
+    report = advice.get("formatted_output", "")
+    
+    # 保存报告到文件
+    report_file = f"reports/report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    with open(report_file, "w", encoding="utf-8") as f:
+        f.write(report)
+    
+    logger.info(f"分析报告已保存到: {report_file}")
+    
+    # 打印报告
+    print("\n" + report)
+    
+    return True, report_file
+
+async def run_ahr999_tool():
+    """运行AHR999数据获取工具"""
+    try:
+        logger.info("运行AHR999数据收集器...")
         
-        print(f"\n等待{INTERVAL}秒后进行下一轮检查...")
-        await asyncio.sleep(1)
+        # 确保data目录存在
+        os.makedirs("data", exist_ok=True)
+        
+        print("AHR999数据获取工具")
+        print("=" * 50)
+        
+        # 使用专用的AHR999收集器
+        from collectors import AHR999Collector
+        collector = AHR999Collector(data_dir="data")
+        
+        # 获取AHR999数据
+        ahr999_data = await collector.get_ahr999_history(days=365, keep_extra_data=True)
+        
+        if ahr999_data and len(ahr999_data) > 0:
+            print(f"\n成功获取AHR999数据! 共 {len(ahr999_data)} 条记录")
+            
+            # 打印最新数据
+            latest = ahr999_data[0]
+            print(f"\n最新数据 ({latest['date']}):")
+            print(f"AHR999指数: {latest['ahr999']:.4f}")
+            if "price" in latest:
+                print(f"BTC价格: ${latest['price']:,.2f}")
+            if "ma200" in latest:
+                print(f"200日均线: ${latest['ma200']:,.2f}")
+            if "price_ma_ratio" in latest:
+                print(f"价格/均线比值: {latest['price_ma_ratio']:.4f}")
+            
+            return True
+        else:
+            print("\n无法获取AHR999数据")
+            return False
+
+    except Exception as e:
+        logger.error(f"运行AHR999数据获取工具出错: {str(e)}")
+        import traceback
+        logger.debug(traceback.format_exc())
+        return False
+
+def get_latest_report():
+    """获取最新的报告文件"""
+    reports_dir = "reports"
+    if not os.path.exists(reports_dir):
+        return None
+        
+    reports = [f for f in os.listdir(reports_dir) if f.startswith("report_") and f.endswith(".txt")]
+    if not reports:
+        return None
+    
+    # 按文件名排序，最新的在最后
+    reports.sort()
+    return os.path.join(reports_dir, reports[-1])
+
+def view_report(report_file):
+    """查看报告内容"""
+    try:
+        # 尝试使用UTF-8编码读取文件
+        try:
+            with open(report_file, "r", encoding="utf-8") as f:
+                content = f.read()
+        except UnicodeDecodeError:
+            # 如果UTF-8失败，尝试GBK编码
+            with open(report_file, "r", encoding="gbk") as f:
+                content = f.read()
+        
+        print("\n" + "=" * 40)
+        print(f"正在查看: {report_file}")
+        print("=" * 40)
+        print(content)
+        print("=" * 40 + "\n")
+    except Exception as e:
+        print(f"读取报告文件出错: {str(e)}")
+
+def get_ai_investment_advice():
+    """获取AI投资建议（使用DeepSeek R1模型）"""
+    print("=== AI投资顾问 (DeepSeek R1) ===\n")
+    
+    # 检查是否存在整合后的数据
+    data_file = "data/daily_data.json"
+    if not os.path.exists(data_file):
+        print("错误: 未找到整合后的数据文件，请先运行数据重组工具")
+        input("\n按Enter键返回主菜单...")
+        return
+
+    # 修复数据文件，确保格式正确
+    print("正在检查并修复数据文件格式...")
+    if not fix_data_file(data_file):
+        print("警告: 数据文件可能存在格式问题，但将继续尝试处理")
+
+    # 初始化AI顾问
+    advisor = DeepseekAdvisor()
+    
+    # 设置分析月数
+    months = 6
+    print(f"将分析最近{months}个月的数据")
+    
+    try:
+        # 获取投资建议
+        print("\n正在获取AI投资建议，请稍候...\n")
+        advice = advisor.get_investment_advice(data_file, months)
+        
+        if advice:
+            print("\n成功获取AI投资建议:")
+            print("-" * 40)
+            print(advice[:500] + "...(更多内容已保存到报告文件)")
+            print("-" * 40)
+            
+            print("\n投资建议已保存到'reports/ai_advice'目录")
+        else:
+            print("错误: 获取AI投资建议失败")
+    
+    except Exception as e:
+        print(f"错误: {str(e)}")
+    
+    input("\n按Enter键返回主菜单...")
+
+async def main():
+    """主函数
+    
+    当无参数直接运行时:
+    - 自动检查更新历史数据（当天有缓存则跳过）
+    - 整合数据
+    - 调用AI建议功能
+    
+    命令行参数:
+    -f/--force: 强制更新历史数据
+    -d/--decode: 运行AHR999数据获取工具
+    -m/--menu: 显示交互式菜单界面
+    -a/--ai: 只使用Deepseek R1 AI顾问(不更新数据)
+    """
+    # 解析命令行参数
+    parser = argparse.ArgumentParser(description="加密货币监控系统 - 基于历史数据分析并提供买入/卖出建议")
+    parser.add_argument("-f", "--force", action="store_true", help="强制更新历史数据")
+    parser.add_argument("-d", "--decode", action="store_true", help="运行AHR999数据获取工具")
+    parser.add_argument("-m", "--menu", action="store_true", help="显示交互式菜单界面")
+    parser.add_argument("-a", "--ai", action="store_true", help="只使用Deepseek R1 AI顾问(不更新数据)")
+    args = parser.parse_args()
+
+    try:
+        # 显示欢迎信息
+        print("\n====== 加密货币监控系统 ======")
+        print("支持分析: BTC价格、AHR999指数和恐惧贪婪指数")
+        print("==============================\n")
+
+
+        # 默认流程：更新数据+AI建议
+        print("正在检查数据更新，请稍候...\n")
+        
+        # 1. 更新历史数据
+        result = await generate_analysis_report(force_update=args.force)
+        print("数据处理完成。\n")
+        
+        # 2. 整合数据
+        try:
+            data_dir = "data"
+            input_file = os.path.join(data_dir, "historical_data.json")
+            output_file = os.path.join(data_dir, "daily_data.json")
+            
+            # 确保数据目录存在
+            os.makedirs(data_dir, exist_ok=True)
+            
+            # 调用重组数据函数
+            print("正在整合数据为按日期组织的格式...\n")
+            success = reorganize_data(input_file, output_file)
+            
+            if success:
+                print(f"数据整合成功！已生成按日期组织的数据文件: {output_file}")
+                
+                # 修复数据文件格式
+                print("正在检查并修复数据文件格式...\n")
+                fix_data_file(output_file)
+                
+                print(f"数据文件处理完成: {output_file}\n")
+            else:
+                print("数据整合失败，请检查日志获取详细信息\n")
+                return 1
+        except Exception as e:
+            print(f"数据整合过程中出错: {str(e)}")
+            logger.error(f"数据整合过程中出错: {str(e)}")
+            return 1
+        
+        # 3. 调用AI建议
+        print("正在生成AI投资建议...\n")
+        get_ai_investment_advice()
+
+    except KeyboardInterrupt:
+        print("\n程序被用户中断")
+        return 1
+    except Exception as e:
+        logger.error(f"程序执行出错: {str(e)}")
+        import traceback
+        logger.debug(traceback.format_exc())
+        return 1
+
+    return 0
 
 if __name__ == "__main__":
-    print("正在始化监控程序...")
-    asyncio.run(daily_monitor()) 
+    """程序入口"""
+    exit_code = asyncio.run(main())
+    sys.exit(exit_code) 

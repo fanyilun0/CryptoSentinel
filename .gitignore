@@ -1,0 +1,13 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+.env
+reports/
+data/
+prompts/
+investment_records/
+templates/
+

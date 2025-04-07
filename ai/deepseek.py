@@ -1,0 +1,302 @@
+"""
+DeepSeek API调用模块 - 提供与DeepSeek R1模型的API交互
+
+此模块负责:
+1. 提供统一的API调用接口
+2. 管理身份验证和API密钥
+3. 处理错误和异常情况
+4. 格式化请求和响应
+"""
+
+import os
+import json
+import logging
+import requests
+from datetime import datetime
+from typing import Dict, Any, List, Optional, Union
+
+# 导入提示词模块
+from ai.prompt import (
+    get_investment_advice_template, 
+    prepare_investment_advice_params,
+    save_prompt_for_debug,
+    extract_json_from_text
+)
+
+# 设置日志
+logger = logging.getLogger(__name__)
+
+class DeepseekAPI:
+    """DeepSeek API接口类，提供与DeepSeek R1模型交互的方法"""
+    
+    DEFAULT_API_URL = "https://api.deepseek.com/v1/chat/completions"
+    DEFAULT_MODEL = "deepseek-reasoner"
+    
+    def __init__(self, api_key: str = None, api_url: str = None):
+        """初始化DeepSeek API客户端
+        
+        Args:
+            api_key: DeepSeek API密钥，如果为None则尝试从环境变量获取
+            api_url: 自定义API URL，如果为None则使用默认值
+        """
+        self.api_key = api_key or os.environ.get("DEEPSEEK_API_KEY")
+        self.api_url = api_url or os.environ.get("DEEPSEEK_API_URL", self.DEFAULT_API_URL)
+        
+        if not self.api_key:
+            logger.warning("未设置DeepSeek API密钥，请通过环境变量DEEPSEEK_API_KEY或初始化参数提供")
+    
+    def validate_api_key(self) -> bool:
+        """验证API密钥是否设置
+        
+        Returns:
+            如果API密钥已设置则返回True，否则返回False
+        """
+        return bool(self.api_key)
+    
+    def chat_completion(self, 
+                        messages: List[Dict[str, str]], 
+                        model: str = DEFAULT_MODEL,
+                        temperature: float = 0.3,
+                        max_tokens: int = 4096,
+                        top_p: float = 1.0,
+                        stream: bool = False,
+                        **kwargs) -> Optional[Dict[str, Any]]:
+        """发送聊天补全请求至DeepSeek API
+        
+        Args:
+            messages: 消息列表，格式为[{"role": "user", "content": "..."}, ...]
+            model: 使用的模型名称，默认为"deepseek-reasoner"
+            temperature: 采样温度，控制输出的随机性，默认为0.3
+            max_tokens: 最大生成的token数量，默认为4096
+            top_p: 核采样的概率质量，默认为1.0
+            stream: 是否使用流式响应，默认为False
+            **kwargs: 其他API参数
+            
+        Returns:
+            API响应的JSON数据，如果调用失败则返回None
+        """
+        if not self.validate_api_key():
+            logger.error("未设置API密钥，无法调用DeepSeek API")
+            return None
+        
+        # 准备参数
+        payload = {
+            "model": model,
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "top_p": top_p,
+            "stream": stream
+        }
+        
+        # 添加其他可选参数
+        payload.update(kwargs)
+        
+        # 调用API
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
+        
+        try:
+            logger.info(f"正在调用DeepSeek API，模型: {model}")
+            response = requests.post(self.api_url, headers=headers, json=payload, timeout=60)
+            
+            if response.status_code == 200:
+                logger.info("DeepSeek API调用成功")
+                return response.json()
+            else:
+                logger.error(f"API调用失败: {response.status_code} - {response.text}")
+                return None
+        
+        except requests.exceptions.RequestException as e:
+            # 合并所有requests异常处理
+            logger.error(f"API请求异常: {str(e)}")
+            return None
+        except Exception as e:
+            logger.error(f"调用DeepSeek API出错: {str(e)}")
+            return None
+    
+    def generate_text(self, prompt: str, **kwargs) -> Optional[str]:
+        """使用单一提示词生成文本响应
+        
+        这是chat_completion的简化版本，方便单个提示词的使用场景
+        
+        Args:
+            prompt: 提示词文本
+            **kwargs: 传递给chat_completion的其他参数
+            
+        Returns:
+            生成的文本内容，如果调用失败则返回None
+        """
+        messages = [{"role": "user", "content": prompt}]
+        response = self.chat_completion(messages, **kwargs)
+        
+        if response:
+            try:
+                content = response["choices"][0]["message"]["content"]
+                return content
+            except (KeyError, IndexError) as e:
+                logger.error(f"解析API响应出错: {str(e)}")
+                return None
+        
+        return None
+    
+    def generate_investment_advice(self, data_json: str, last_advice: Dict = None, **kwargs) -> Optional[str]:
+        """生成加密货币投资建议
+        
+        Args:
+            data_json: 包含历史价格和指标数据的JSON字符串
+            last_advice: 上次生成的建议，JSON格式，可选
+            **kwargs: 传递给generate_text的其他参数
+            
+        Returns:
+            生成的投资建议文本，如果调用失败则返回None
+        """
+        # 获取当前日期
+        current_date = kwargs.pop('current_date', None)
+        if not current_date:
+            current_date = datetime.now().strftime('%Y-%m-%d')
+        
+        # 准备提示词参数
+        params = prepare_investment_advice_params(current_date, last_advice)
+        
+        # 生成提示词
+        prompt = get_investment_advice_template(
+            current_date=params["current_date"],
+            last_position=params["last_position"],
+            last_cost_basis=params["last_cost_basis"],
+            last_action=params["last_action"],
+            data_json=data_json
+        )
+        
+        # 在发送前记录完整提示词用于调试
+        if kwargs.get('debug', False):
+            save_prompt_for_debug(prompt, current_date)
+        
+        return self.generate_text(prompt, **kwargs)
+    
+    def save_investment_record(self, recommendation: str, data_json: str = None, **kwargs) -> Dict[str, Any]:
+        """保存投资建议记录，并解析JSON格式的操作摘要
+        
+        Args:
+            recommendation: 生成的投资建议文本
+            data_json: 用于生成建议的市场数据，可选
+            **kwargs: 其他元数据
+            
+        Returns:
+            包含记录ID和解析后建议的字典
+        """
+        # 确保记录目录存在
+        records_dir = kwargs.get('records_dir', 'investment_records')
+        os.makedirs(records_dir, exist_ok=True)
+        
+        # 创建记录ID
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+        record_id = f"BTI-{timestamp}"
+        
+        # 解析JSON操作摘要
+        advice_data = extract_json_from_text(recommendation) or {}
+        
+        # 准备记录数据
+        record = {
+            "id": record_id,
+            "timestamp": timestamp,
+            "date": datetime.now().strftime('%Y-%m-%d'),
+            "recommendation": recommendation,
+            "advice_data": advice_data,
+            "metadata": kwargs
+        }
+        
+        # 如果提供了市场数据，也保存它
+        if data_json:
+            try:
+                record["market_data"] = json.loads(data_json)
+            except:
+                record["market_data_raw"] = data_json
+        
+        # 保存到文件
+        filename = f"{record_id}.json"
+        filepath = os.path.join(records_dir, filename)
+        
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(record, f, ensure_ascii=False, indent=2)
+        
+        logger.info(f"已保存投资建议记录: {filepath}")
+        return {"record_id": record_id, "advice_data": advice_data}
+    
+    def generate_and_save_investment_advice(self, data_json: str, last_record_id: str = None, debug: bool = False, **kwargs) -> Dict[str, Any]:
+        """生成投资建议并保存记录，可选择加载上次建议
+        
+        Args:
+            data_json: 包含历史价格和指标数据的JSON字符串
+            last_record_id: 上次建议的记录ID，如果提供，会加载该记录
+            debug: 是否开启调试模式，记录完整提示词
+            **kwargs: 传递给generate_investment_advice的其他参数
+            
+        Returns:
+            包含建议内容、记录ID和结构化建议数据的字典
+        """
+        # 尝试加载上次建议
+        last_advice = None
+        if last_record_id:
+            logger.info(f"正在加载上次投资建议: {last_record_id}")
+            last_record = self.load_investment_record(last_record_id)
+            if last_record:
+                # 首先尝试使用已解析的结构化数据
+                if "advice_data" in last_record and last_record["advice_data"]:
+                    last_advice = last_record["advice_data"]
+                    logger.info(f"成功加载上次建议数据: 仓位 {last_advice.get('position', 'N/A')}%")
+                # 如果没有结构化数据，尝试重新解析
+                elif "recommendation" in last_record:
+                    last_advice = extract_json_from_text(last_record["recommendation"])
+                    if last_advice:
+                        logger.info(f"从文本重新解析上次建议数据: 仓位 {last_advice.get('position', 'N/A')}%")
+        else:
+            logger.info("未提供上次记录ID，将生成首次投资建议")
+        
+        # 生成新建议
+        kwargs['debug'] = debug  # 传递调试标志
+        advice = self.generate_investment_advice(data_json, last_advice=last_advice, **kwargs)
+        
+        if not advice:
+            return {"success": False, "error": "生成投资建议失败"}
+        
+        # 保存记录并解析结构化数据
+        result = self.save_investment_record(
+            recommendation=advice,
+            data_json=data_json,
+            last_record_id=last_record_id,
+            user_settings=kwargs.get('user_settings', {})
+        )
+        
+        return {
+            "success": True,
+            "advice": advice,
+            "record_id": result["record_id"],
+            "advice_data": result["advice_data"]
+        }
+    
+    def load_investment_record(self, record_id: str, records_dir: str = 'investment_records') -> Optional[Dict[str, Any]]:
+        """加载投资建议记录
+        
+        Args:
+            record_id: 记录ID
+            records_dir: 记录目录
+            
+        Returns:
+            记录数据字典，如果加载失败则返回None
+        """
+        filepath = os.path.join(records_dir, f"{record_id}.json")
+        
+        if not os.path.exists(filepath):
+            logger.error(f"找不到记录文件: {filepath}")
+            return None
+        
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                record = json.load(f)
+            return record
+        except Exception as e:
+            logger.error(f"加载记录失败: {str(e)}")
+            return None
