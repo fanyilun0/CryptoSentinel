@@ -1,10 +1,4 @@
-#!/usr/bin/env python
-"""
-加密货币监控系统 - 基于历史数据分析并提供买入/卖出建议
-支持分析BTC价格、AHR999指数和恐惧贪婪指数
-"""
-
-import os
+﻿import os
 import sys
 import json
 import asyncio
@@ -12,14 +6,17 @@ import logging
 import platform
 from datetime import datetime
 
+src_dir = os.path.join(os.path.dirname(__file__), 'src')
+sys.path.append(src_dir)
+
 # 导入自定义模块
 from config import DATA_DIRS
-from utils.historical_data import HistoricalDataCollector
-from utils.trend_analyzer import TrendAnalyzer
-from utils.data_reorganizer import reorganize_data
+from src.utils.historical_data import HistoricalDataCollector
+from src.utils.trend_analyzer import TrendAnalyzer
+from src.utils.data_reorganizer import reorganize_data
 
 # 从新的AI模块导入DeepseekAdvisor
-from ai.advisor import DeepseekAdvisor
+from src.ai.advisor import DeepseekAdvisor
 
 # 配置日志
 logging.basicConfig(
