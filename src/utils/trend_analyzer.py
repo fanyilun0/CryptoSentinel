@@ -580,7 +580,7 @@ class TrendAnalyzer:
         output.append(f"生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
         
         # 价格信息部分
-        output.append("【价格信息】")
+        output.append("【💰 价格信息】")
         if price_analysis["status"] == "success":
             latest_date = price_analysis.get("latest_date", "未知")
             output.append(f"最新数据日期: {latest_date}")
@@ -605,7 +605,7 @@ class TrendAnalyzer:
         output.append("")
         
         # 市场情绪指标部分
-        output.append("【市场情绪指标】")
+        output.append("【💭 市场情绪指标】")
         if sentiment_analysis["status"] == "success":
             # AHR999指数
             if "ahr999" in sentiment_analysis and sentiment_analysis["ahr999"]["status"] == "success":
@@ -636,7 +636,7 @@ class TrendAnalyzer:
             output.append("")
         
         # 投资建议部分
-        output.append("【投资建议】")
+        output.append("【💡 投资建议】")
         
         # 分项建议
         if "price_based" in advice:

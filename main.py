@@ -6,6 +6,8 @@ import logging
 import platform
 from datetime import datetime
 
+from webhook import send_message_async
+
 src_dir = os.path.join(os.path.dirname(__file__), 'src')
 sys.path.append(src_dir)
 
@@ -74,6 +76,13 @@ async def generate_analysis_report(force_update=False):
     # 获取格式化的输出结果
     report = advice.get("formatted_output", "")
     
+    # 构建推送消息
+    push_message = "🔔 BTC投资建议分析报告\n\n"
+    push_message += f"{report}"
+    
+    # 推送消息
+    await send_message_async(push_message)
+    
     # 保存报告到文件
     report_file = f"{DATA_DIRS['reports']}/report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
     with open(report_file, "w", encoding="utf-8") as f:
@@ -86,7 +95,7 @@ async def generate_analysis_report(force_update=False):
     
     return True, report_file
 
-def get_ai_investment_advice():
+async def get_ai_investment_advice():
     """获取AI投资建议（使用DeepSeek R1模型）"""
     print("=== AI投资顾问 (DeepSeek R1) ===\n")
     
@@ -134,6 +143,13 @@ def get_ai_investment_advice():
         if advice:
             print("\n成功获取AI投资建议:")
             print(advice)
+            
+            # 构建推送消息
+            push_message = "🤖 AI投资顾问建议\n\n"
+            push_message += "\n".join(advice)
+            
+            # 推送消息
+            await send_message_async(push_message)
         else:
             print("错误: 获取AI投资建议失败")
     
@@ -208,7 +224,7 @@ async def main():
         # 3. 调用AI建议
         try:
             print("正在生成AI投资建议...\n")
-            get_ai_investment_advice()
+            await get_ai_investment_advice()
         except Exception as e:
             logger.error(f"生成AI投资建议过程中出错: {str(e)}")
             print(f"生成AI投资建议过程中出错: {str(e)}")
