@@ -14,11 +14,6 @@ IS_DOCKER = os.getenv('IS_DOCKER', 'false').lower() == 'true'
 # 根据运行环境选择代理地址
 PROXY_URL = 'http://host.docker.internal:7890' if IS_DOCKER else 'http://127.0.0.1:7890'
 USE_PROXY = True
-ALWAYS_SEND = True
-
-# 时间配置
-INTERVAL = 86400  # 改为24小时检查一次
-TIME_OFFSET = 0
 
 # 文件路径配置
 DATA_DIRS = {
