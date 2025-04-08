@@ -99,7 +99,7 @@ def save_daily_data(daily_data: Dict[str, Dict[str, Any]], file_path: str) -> bo
         complete_data = {
             "data": data_list,
             "count": len(data_list),
-            "generated_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            # "generated_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             "description": "Daily combined BTC price, AHR999 index and Fear & Greed index data"
         }
         
@@ -140,7 +140,6 @@ def reorganize_data(input_file: str, output_file: str) -> bool:
         logger.error("数据重组失败")
         return False
 
-def fix_data_file(data_file: str) -> bool:
     """修复数据文件格式问题
     
     Args:

@@ -36,7 +36,7 @@ class DeepseekAdvisor:
         self.api = DeepseekAPI(api_key=api_key, api_url=api_url)
         
         # 确保保存建议的目录存在
-        self.advice_dir = os.path.join(DATA_DIRS['responses'])
+        self.advice_dir = os.path.join(DATA_DIRS['advices'])
         os.makedirs(self.advice_dir, exist_ok=True)
         
         logger.info("DeepSeek顾问初始化完成")
@@ -79,12 +79,11 @@ class DeepseekAdvisor:
             if result.get("success"):
                 # 获取建议内容和记录ID
                 advice = result.get("advice")
-                record_id = result.get("record_id")
                 
                 # 额外保存一份到AI建议目录
-                self._save_advice_to_file(advice, record_id)
+                self._save_advice_to_file(advice)
                 
-                logger.info(f"成功生成投资建议，记录ID: {record_id}")
+                logger.info(f"成功生成投资建议")
                 return advice
             else:
                 error = result.get("error", "未知错误")

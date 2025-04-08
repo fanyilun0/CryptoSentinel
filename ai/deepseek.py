@@ -133,6 +133,9 @@ class DeepseekAPI:
         response = self.chat_completion(messages, **kwargs)
         
         if response:
+            
+            self.save_response_to_file(response)
+            
             try:
                 content = response["choices"][0]["message"]["content"]
                 return content
@@ -170,9 +173,7 @@ class DeepseekAPI:
             data_json=data_json
         )
         
-        # 在发送前记录完整提示词用于调试
-        if kwargs.get('debug', False):
-            save_prompt_for_debug(prompt, current_date)
+        save_prompt_for_debug(prompt)
         
         return self.generate_text(prompt, **kwargs)
     
@@ -263,8 +264,7 @@ class DeepseekAPI:
         Returns:
             最新的记录数据字典和记录ID，如果没有记录则返回None
         """
-        if records_dir is None:
-            records_dir = DATA_DIRS['records']
+        records_dir = DATA_DIRS['records']
             
         if not os.path.exists(records_dir):
             logger.warning(f"记录目录不存在: {records_dir}")
@@ -330,8 +330,6 @@ class DeepseekAPI:
         else:
             logger.info("没有找到上次记录，将生成首次投资建议")
         
-        # 生成新建议
-        kwargs['debug'] = debug  # 传递调试标志
         advice = self.generate_investment_advice(data_json, last_advice=last_advice, **kwargs)
         
         if not advice:
@@ -351,3 +349,33 @@ class DeepseekAPI:
             "record_id": result["record_id"],
             "advice_data": result["advice_data"]
         }
+
+    def save_response_to_file(self, response):
+        """
+        将AI回复保存到本地文件
+        
+        Args:
+            response: AI的回复内容 (JSON对象)
+        """
+        try:
+            # 创建保存目录
+            responses_dir = os.path.join(DATA_DIRS['responses'])
+            os.makedirs(responses_dir, exist_ok=True)
+            
+            # 生成带时间戳的文件名
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            filename = f"response_{timestamp}.json"
+            file_path = os.path.join(responses_dir, filename)
+            
+            # 保存到文件 (作为JSON)
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(response, f, ensure_ascii=False, indent=2)
+                  
+            logger.info(f"AI原始回复已保存至: {file_path}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"保存AI回复时出错: {str(e)}")
+            import traceback
+            logger.debug(traceback.format_exc())
+            return False

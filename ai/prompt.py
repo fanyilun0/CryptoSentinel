@@ -146,18 +146,15 @@ def prepare_investment_advice_params(current_date: Optional[str] = None, last_ad
     
     return params
 
-def save_prompt_for_debug(prompt: str, current_date: str = None) -> str:
+def save_prompt_for_debug(prompt: str) -> str:
     """保存提示词到文件用于调试
     
     Args:
         prompt: 提示词文本
-        current_date: 当前日期，用于文件名
         
     Returns:
         保存的文件路径
     """
-    if current_date is None:
-        current_date = datetime.now().strftime('%Y-%m-%d')
         
     # 确保调试目录存在
     prompts_dir = DATA_DIRS['prompts']
