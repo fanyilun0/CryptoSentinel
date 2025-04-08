@@ -6,8 +6,6 @@ __pycache__
 *.pyz
 .env
 reports/
-data/
 prompts/
-investment_records/
 templates/
 

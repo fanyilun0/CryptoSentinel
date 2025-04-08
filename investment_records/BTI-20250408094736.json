@@ -1,0 +1,1283 @@
+{
+  "id": "BTI-20250408094736",
+  "timestamp": "20250408094736",
+  "date": "2025-04-08",
+  "recommendation": "### 一、市场状况简报  \n当前比特币价格79,446.73美元，处于短期回调阶段。AHR999指数0.6603（低于1，估值合理偏低），恐惧贪婪指数24（极度恐惧）。关键信号：价格从3月高点106,058美元回撤25%，市场情绪低迷，但AHR999显示长期投资价值逐步显现。\n\n---\n\n### 二、本周操作建议  \n1. **仓位调整**：建议建仓30%（300美元），分两批入场。  \n2. **入场价位**：  \n   - 第一批：当前价79,400美元附近（50%仓位，150美元）  \n   - 第二批：若回调至76,000-77,000美元（补仓150美元）。  \n3. **止损设置**：跌破74,000美元（回撤6.8%）止损，止损后观望至AHR999<0.5再评估。  \n4. **获利目标**：  \n   - 短期：85,000美元（止盈部分仓位）  \n   - 中期：92,000美元（AHR999接近1时减半）。  \n\n---\n\n### 三、仓位变动追踪  \n- **上次建议**：首次建仓建议。  \n- **本次建议**：30%仓位分批建仓。  \n- **仓位变化**：0% → 30%。  \n- **成本基础**：首笔成本79,400美元（若第二批触发，均价77,700美元）。  \n\n---\n\n### 四、风险警报  \n1. **情绪持续恶化**：恐惧贪婪指数<20可能引发进一步抛售。应对：暂停补仓，等待指数回升。  \n2. **AHR999反弹乏力**：若指数长期<0.6，需警惕下行趋势。应对：止损后暂不重新入场。  \n\n---\n\n### 五、下周关注重点  \n1. 恐惧贪婪指数能否回升至30以上。  \n2. 价格能否站稳78,000美元支撑。  \n3. AHR999是否突破0.7。  \n\n---\n\n### 六、结构化数据  \n```json\n{\n  \"position\": 30,\n  \"action\": \"建仓\",\n  \"entry_price\": \"79,400及76,000-77,000\",\n  \"stop_loss\": 74000,\n  \"target_short\": 85000,\n  \"target_mid\": 92000,\n  \"cost_basis\": 79400,\n  \"risks\": [\"情绪持续恶化\", \"AHR999反弹乏力\"],\n  \"indicators\": [\"恐惧贪婪指数\", \"78,000支撑\", \"AHR999\"]\n}\n```\n\n操作记录ID：BTI-20250408  \n\n免责声明：加密货币波动剧烈，投资需谨慎。",
+  "advice_data": {
+    "position": 30,
+    "action": "建仓",
+    "entry_price": "79,400及76,000-77,000",
+    "stop_loss": 74000,
+    "target_short": 85000,
+    "target_mid": 92000,
+    "cost_basis": 79400,
+    "risks": [
+      "情绪持续恶化",
+      "AHR999反弹乏力"
+    ],
+    "indicators": [
+      "恐惧贪婪指数",
+      "78,000支撑",
+      "AHR999"
+    ]
+  },
+  "metadata": {
+    "last_record_id": null,
+    "user_settings": {}
+  },
+  "market_data": [
+    {
+      "date": "2025-04-08",
+      "price": 79446.73,
+      "fear_greed_value": 24,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-04-07",
+      "price": 79163.24,
+      "ahr999": 0.6603,
+      "fear_greed_value": 23,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-04-06",
+      "price": 78430.0,
+      "fear_greed_value": 34,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-04-05",
+      "price": 83537.99,
+      "ahr999": 0.7809,
+      "fear_greed_value": 30,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-04-04",
+      "price": 83889.87,
+      "ahr999": 0.7932,
+      "fear_greed_value": 28,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-04-03",
+      "price": 83213.09,
+      "ahr999": 0.784,
+      "fear_greed_value": 25,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-04-02",
+      "price": 82516.29,
+      "ahr999": 0.8056,
+      "fear_greed_value": 44,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-04-01",
+      "price": 85158.34,
+      "ahr999": 0.7903,
+      "fear_greed_value": 34,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-31",
+      "price": 82550.01,
+      "ahr999": 0.763,
+      "fear_greed_value": 34,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-30",
+      "price": 82389.99,
+      "ahr999": 0.7857,
+      "fear_greed_value": 32,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-29",
+      "price": 82648.54,
+      "ahr999": 0.802,
+      "fear_greed_value": 26,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-28",
+      "price": 84424.38,
+      "ahr999": 0.833,
+      "fear_greed_value": 44,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-27",
+      "price": 87232.01,
+      "ahr999": 0.8782,
+      "fear_greed_value": 40,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-26",
+      "price": 86909.17,
+      "ahr999": 0.8973,
+      "fear_greed_value": 47,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-25",
+      "price": 87392.87,
+      "ahr999": 0.8654,
+      "fear_greed_value": 46,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-24",
+      "price": 87498.16,
+      "ahr999": 0.8759,
+      "fear_greed_value": 45,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-23",
+      "price": 86082.5,
+      "ahr999": 0.8272,
+      "fear_greed_value": 30,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-22",
+      "price": 83840.59,
+      "ahr999": 0.8292,
+      "fear_greed_value": 32,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-21",
+      "price": 84088.79,
+      "ahr999": 0.8226,
+      "fear_greed_value": 31,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-20",
+      "price": 84223.39,
+      "ahr999": 0.8619,
+      "fear_greed_value": 49,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-19",
+      "price": 86845.94,
+      "ahr999": 0.8117,
+      "fear_greed_value": 32,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-18",
+      "price": 82715.03,
+      "ahr999": 0.8132,
+      "fear_greed_value": 34,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-17",
+      "price": 84010.03,
+      "ahr999": 0.8233,
+      "fear_greed_value": 32,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-16",
+      "price": 82574.53,
+      "ahr999": 0.8416,
+      "fear_greed_value": 30,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-15",
+      "price": 84338.44,
+      "ahr999": 0.8344,
+      "fear_greed_value": 46,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-14",
+      "price": 83983.2,
+      "ahr999": 0.8048,
+      "fear_greed_value": 27,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-13",
+      "price": 81115.78,
+      "ahr999": 0.8258,
+      "fear_greed_value": 45,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-12",
+      "price": 83680.12,
+      "ahr999": 0.8133,
+      "fear_greed_value": 34,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-11",
+      "price": 82932.99,
+      "ahr999": 0.7752,
+      "fear_greed_value": 24,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-10",
+      "price": 78595.86,
+      "ahr999": 0.8155,
+      "fear_greed_value": 20,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-09",
+      "price": 80734.37,
+      "ahr999": 0.8929,
+      "fear_greed_value": 27,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-08",
+      "price": 86222.45,
+      "ahr999": 0.8999,
+      "fear_greed_value": 28,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-07",
+      "price": 86801.75,
+      "ahr999": 0.9472,
+      "fear_greed_value": 34,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-06",
+      "price": 89931.89,
+      "ahr999": 1.0139,
+      "fear_greed_value": 25,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-05",
+      "price": 90606.01,
+      "ahr999": 0.9363,
+      "fear_greed_value": 20,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-04",
+      "price": 87281.98,
+      "fear_greed_value": 15,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-03",
+      "price": 86220.61,
+      "ahr999": 1.0442,
+      "fear_greed_value": 33,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-02",
+      "price": 94270.0,
+      "ahr999": 0.9151,
+      "fear_greed_value": 26,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-03-01",
+      "price": 86064.53,
+      "ahr999": 0.8841,
+      "fear_greed_value": 20,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-28",
+      "price": 84349.94,
+      "ahr999": 0.7749,
+      "fear_greed_value": 16,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-27",
+      "price": 84708.58,
+      "ahr999": 0.9218,
+      "fear_greed_value": 10,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-26",
+      "price": 84250.09,
+      "ahr999": 0.9783,
+      "fear_greed_value": 21,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-25",
+      "price": 88680.4,
+      "fear_greed_value": 25,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-24",
+      "price": 91552.88,
+      "ahr999": 1.1461,
+      "fear_greed_value": 49,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-23",
+      "price": 96258.0,
+      "ahr999": 1.1651,
+      "fear_greed_value": 50,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-22",
+      "price": 96551.01,
+      "ahr999": 1.1635,
+      "fear_greed_value": 49,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-21",
+      "price": 96181.98,
+      "ahr999": 1.2137,
+      "fear_greed_value": 55,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-20",
+      "price": 98305.0,
+      "ahr999": 1.185,
+      "fear_greed_value": 49,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-19",
+      "price": 96644.37,
+      "ahr999": 1.1589,
+      "fear_greed_value": 44,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-18",
+      "price": 95671.74,
+      "ahr999": 1.1571,
+      "fear_greed_value": 47,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-17",
+      "price": 95780.0,
+      "ahr999": 1.1745,
+      "fear_greed_value": 51,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-16",
+      "price": 96118.12,
+      "ahr999": 1.2067,
+      "fear_greed_value": 54,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-15",
+      "price": 97569.66,
+      "ahr999": 1.213,
+      "fear_greed_value": 50,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-14",
+      "price": 97500.48,
+      "ahr999": 1.2064,
+      "fear_greed_value": 48,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-13",
+      "price": 96608.14,
+      "ahr999": 1.188,
+      "fear_greed_value": 50,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-12",
+      "price": 97869.99,
+      "ahr999": 1.1916,
+      "fear_greed_value": 46,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-11",
+      "price": 95778.2,
+      "ahr999": 1.25,
+      "fear_greed_value": 47,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-10",
+      "price": 97430.82,
+      "ahr999": 1.2322,
+      "fear_greed_value": 43,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-09",
+      "price": 96462.75,
+      "ahr999": 1.2279,
+      "fear_greed_value": 46,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-08",
+      "price": 96444.74,
+      "ahr999": 1.209,
+      "fear_greed_value": 44,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-07",
+      "price": 96506.8,
+      "ahr999": 1.2264,
+      "fear_greed_value": 44,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-06",
+      "price": 96554.35,
+      "ahr999": 1.2663,
+      "fear_greed_value": 49,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-05",
+      "price": 96612.43,
+      "ahr999": 1.2626,
+      "fear_greed_value": 54,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-04",
+      "price": 97763.13,
+      "ahr999": 1.2818,
+      "fear_greed_value": 72,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-03",
+      "price": 101328.52,
+      "ahr999": 1.2063,
+      "fear_greed_value": 44,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-02",
+      "price": 97700.59,
+      "ahr999": 1.3221,
+      "fear_greed_value": 60,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-02-01",
+      "price": 100635.65,
+      "ahr999": 1.3953,
+      "fear_greed_value": 68,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-31",
+      "price": 102429.56,
+      "fear_greed_value": 76,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-30",
+      "price": 104722.94,
+      "ahr999": 1.4844,
+      "fear_greed_value": 70,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-29",
+      "price": 103733.24,
+      "ahr999": 1.4234,
+      "fear_greed_value": 72,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-28",
+      "price": 101335.52,
+      "ahr999": 1.431,
+      "fear_greed_value": 72,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-27",
+      "price": 102082.83,
+      "ahr999": 1.3347,
+      "fear_greed_value": 71,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-26",
+      "price": 102620.0,
+      "ahr999": 1.5041,
+      "fear_greed_value": 73,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-25",
+      "price": 104746.85,
+      "ahr999": 1.4926,
+      "fear_greed_value": 75,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-24",
+      "price": 104870.5,
+      "ahr999": 1.5168,
+      "fear_greed_value": 75,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-23",
+      "price": 103910.34,
+      "ahr999": 1.4559,
+      "fear_greed_value": 75,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-22",
+      "price": 103706.66,
+      "ahr999": 1.5294,
+      "fear_greed_value": 84,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-21",
+      "price": 106143.82,
+      "ahr999": 1.4459,
+      "fear_greed_value": 76,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-20",
+      "price": 102260.01,
+      "ahr999": 1.6019,
+      "fear_greed_value": 76,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-19",
+      "price": 101331.57,
+      "ahr999": 1.5488,
+      "fear_greed_value": 77,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-18",
+      "price": 104556.23,
+      "ahr999": 1.4851,
+      "fear_greed_value": 77,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-17",
+      "price": 104077.48,
+      "fear_greed_value": 75,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-16",
+      "price": 99987.3,
+      "ahr999": 1.4056,
+      "fear_greed_value": 75,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-15",
+      "price": 100497.35,
+      "ahr999": 1.341,
+      "fear_greed_value": 70,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-14",
+      "price": 96560.86,
+      "ahr999": 1.2791,
+      "fear_greed_value": 63,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-13",
+      "price": 94536.1,
+      "ahr999": 1.248,
+      "fear_greed_value": 61,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-12",
+      "price": 94545.06,
+      "ahr999": 1.272,
+      "fear_greed_value": 62,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-11",
+      "price": 94599.99,
+      "ahr999": 1.2735,
+      "fear_greed_value": 69,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-10",
+      "price": 94726.11,
+      "ahr999": 1.2844,
+      "fear_greed_value": 50,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-09",
+      "price": 92552.49,
+      "ahr999": 1.2532,
+      "fear_greed_value": 69,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-08",
+      "price": 95060.61,
+      "ahr999": 1.3229,
+      "fear_greed_value": 70,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-07",
+      "price": 96954.61,
+      "ahr999": 1.4989,
+      "fear_greed_value": 78,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-06",
+      "price": 102235.6,
+      "ahr999": 1.435,
+      "fear_greed_value": 76,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-05",
+      "price": 98363.61,
+      "ahr999": 1.4084,
+      "fear_greed_value": 72,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-04",
+      "price": 98220.5,
+      "ahr999": 1.4132,
+      "fear_greed_value": 73,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-03",
+      "price": 98174.18,
+      "ahr999": 1.3619,
+      "fear_greed_value": 74,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-02",
+      "price": 96984.79,
+      "ahr999": 1.3517,
+      "fear_greed_value": 70,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2025-01-01",
+      "price": 94591.79,
+      "ahr999": 1.2955,
+      "fear_greed_value": 66,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-31",
+      "price": 93576.0,
+      "fear_greed_value": 64,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-30",
+      "price": 92792.05,
+      "ahr999": 1.3014,
+      "fear_greed_value": 65,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-29",
+      "price": 93738.2,
+      "ahr999": 1.3476,
+      "fear_greed_value": 73,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-28",
+      "price": 95300.0,
+      "ahr999": 1.3259,
+      "fear_greed_value": 72,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-27",
+      "price": 94299.03,
+      "ahr999": 1.3499,
+      "fear_greed_value": 74,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-26",
+      "price": 95791.6,
+      "ahr999": 1.429,
+      "fear_greed_value": 79,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-25",
+      "price": 99429.6,
+      "ahr999": 1.443,
+      "fear_greed_value": 73,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-24",
+      "price": 98663.58,
+      "ahr999": 1.3357,
+      "fear_greed_value": 73,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-23",
+      "price": 94881.47,
+      "ahr999": 1.3716,
+      "fear_greed_value": 70,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-22",
+      "price": 95186.27,
+      "ahr999": 1.3987,
+      "fear_greed_value": 73,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-21",
+      "price": 97291.99,
+      "ahr999": 1.4875,
+      "fear_greed_value": 73,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-20",
+      "price": 97805.44,
+      "ahr999": 1.4547,
+      "fear_greed_value": 74,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-19",
+      "price": 97461.86,
+      "ahr999": 1.5758,
+      "fear_greed_value": 75,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-18",
+      "price": 100204.01,
+      "ahr999": 1.6621,
+      "fear_greed_value": 81,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-17",
+      "price": 106133.74,
+      "ahr999": 1.7504,
+      "fear_greed_value": 87,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-16",
+      "price": 106058.66,
+      "ahr999": 1.6963,
+      "fear_greed_value": 83,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-15",
+      "price": 104463.99,
+      "ahr999": 1.5979,
+      "fear_greed_value": 80,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-14",
+      "price": 101420.0,
+      "ahr999": 1.6053,
+      "fear_greed_value": 83,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-13",
+      "price": 101424.25,
+      "ahr999": 1.5569,
+      "fear_greed_value": 76,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-12",
+      "price": 100004.29,
+      "ahr999": 1.573,
+      "fear_greed_value": 83,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-11",
+      "price": 101125.0,
+      "ahr999": 1.4809,
+      "fear_greed_value": 74,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-10",
+      "price": 96593.0,
+      "ahr999": 1.479,
+      "fear_greed_value": 78,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-09",
+      "price": 97276.47,
+      "ahr999": 1.5573,
+      "fear_greed_value": 78,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-08",
+      "price": 101109.59,
+      "ahr999": 1.5648,
+      "fear_greed_value": 79,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-07",
+      "price": 99831.99,
+      "fear_greed_value": 75,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-06",
+      "price": 99740.84,
+      "ahr999": 1.523,
+      "fear_greed_value": 72,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-05",
+      "price": 96945.63,
+      "ahr999": 1.6584,
+      "fear_greed_value": 84,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-04",
+      "price": 98587.32,
+      "ahr999": 1.485,
+      "fear_greed_value": 78,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-03",
+      "price": 95849.69,
+      "ahr999": 1.4586,
+      "fear_greed_value": 76,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-02",
+      "price": 95840.62,
+      "ahr999": 1.4759,
+      "fear_greed_value": 80,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-12-01",
+      "price": 97185.18,
+      "ahr999": 1.4954,
+      "fear_greed_value": 81,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-30",
+      "price": 96407.99,
+      "ahr999": 1.5099,
+      "fear_greed_value": 84,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-29",
+      "price": 97460.0,
+      "ahr999": 1.4784,
+      "fear_greed_value": 78,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-28",
+      "price": 95643.98,
+      "fear_greed_value": 77,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-27",
+      "price": 95863.11,
+      "ahr999": 1.4232,
+      "fear_greed_value": 75,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-26",
+      "price": 91965.16,
+      "ahr999": 1.4324,
+      "fear_greed_value": 79,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-25",
+      "price": 93010.01,
+      "ahr999": 1.57,
+      "fear_greed_value": 82,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-24",
+      "price": 97900.04,
+      "ahr999": 1.5881,
+      "fear_greed_value": 80,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-23",
+      "price": 97672.4,
+      "ahr999": 1.5975,
+      "fear_greed_value": 93,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-22",
+      "price": 98892.0,
+      "ahr999": 1.6225,
+      "fear_greed_value": 94,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-21",
+      "price": 98317.12,
+      "ahr999": 1.5549,
+      "fear_greed_value": 82,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-20",
+      "price": 94286.56,
+      "ahr999": 1.4311,
+      "fear_greed_value": 83,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-19",
+      "price": 92310.79,
+      "ahr999": 1.3976,
+      "fear_greed_value": 90,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-18",
+      "price": 90464.08,
+      "ahr999": 1.4055,
+      "fear_greed_value": 83,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-17",
+      "price": 89855.99,
+      "ahr999": 1.3738,
+      "fear_greed_value": 90,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-16",
+      "price": 90586.92,
+      "ahr999": 1.395,
+      "fear_greed_value": 86,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-15",
+      "price": 91032.07,
+      "ahr999": 1.2941,
+      "fear_greed_value": 80,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-14",
+      "price": 87325.59,
+      "ahr999": 1.3928,
+      "fear_greed_value": 88,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-13",
+      "price": 90375.2,
+      "ahr999": 1.2927,
+      "fear_greed_value": 84,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-12",
+      "price": 87952.01,
+      "ahr999": 1.3448,
+      "fear_greed_value": 80,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-11",
+      "price": 88647.99,
+      "ahr999": 1.1199,
+      "fear_greed_value": 76,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-10",
+      "price": 80370.01,
+      "ahr999": 1.0607,
+      "fear_greed_value": 78,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-09",
+      "price": 76677.46,
+      "ahr999": 1.0008,
+      "fear_greed_value": 75,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-08",
+      "price": 76509.78,
+      "ahr999": 0.9932,
+      "fear_greed_value": 75,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-07",
+      "price": 75857.89,
+      "ahr999": 0.9591,
+      "fear_greed_value": 77,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-06",
+      "price": 75571.99,
+      "ahr999": 0.9253,
+      "fear_greed_value": 70,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-05",
+      "price": 69372.01,
+      "ahr999": 0.8175,
+      "fear_greed_value": 70,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-04",
+      "price": 67850.01,
+      "ahr999": 0.812,
+      "fear_greed_value": 70,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-03",
+      "price": 68775.99,
+      "ahr999": 0.8077,
+      "fear_greed_value": 74,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-02",
+      "price": 69374.74,
+      "ahr999": 0.8425,
+      "fear_greed_value": 72,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-11-01",
+      "price": 69496.01,
+      "ahr999": 0.8304,
+      "fear_greed_value": 75,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-31",
+      "price": 70292.01,
+      "ahr999": 0.9086,
+      "fear_greed_value": 77,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-30",
+      "price": 72344.74,
+      "ahr999": 0.9049,
+      "fear_greed_value": 77,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-29",
+      "price": 72736.42,
+      "ahr999": 0.8752,
+      "fear_greed_value": 72,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-28",
+      "price": 69962.21,
+      "ahr999": 0.8137,
+      "fear_greed_value": 72,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-27",
+      "price": 68021.7,
+      "ahr999": 0.7858,
+      "fear_greed_value": 74,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-26",
+      "price": 67092.76,
+      "ahr999": 0.782
+    },
+    {
+      "date": "2024-10-25",
+      "price": 66698.33,
+      "ahr999": 0.7944,
+      "fear_greed_value": 72,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-24",
+      "price": 68198.28,
+      "ahr999": 0.7864,
+      "fear_greed_value": 69,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-23",
+      "price": 66668.65,
+      "ahr999": 0.781,
+      "fear_greed_value": 71,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-22",
+      "price": 67426.0,
+      "ahr999": 0.7943,
+      "fear_greed_value": 70,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-21",
+      "price": 67377.5,
+      "ahr999": 0.8214,
+      "fear_greed_value": 72,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-20",
+      "price": 69031.99,
+      "ahr999": 0.8187,
+      "fear_greed_value": 73,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-19",
+      "price": 68378.0,
+      "ahr999": 0.8189,
+      "fear_greed_value": 72,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-18",
+      "price": 68428.0,
+      "ahr999": 0.8105,
+      "fear_greed_value": 73,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-17",
+      "price": 67421.78,
+      "ahr999": 0.7953,
+      "fear_greed_value": 71,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-16",
+      "price": 67620.01,
+      "ahr999": 0.7883,
+      "fear_greed_value": 73,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-15",
+      "price": 67074.14,
+      "ahr999": 0.7582,
+      "fear_greed_value": 65,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-14",
+      "price": 66083.99,
+      "ahr999": 0.7352,
+      "fear_greed_value": 48,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-13",
+      "price": 62870.02,
+      "ahr999": 0.6961,
+      "fear_greed_value": 50,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-12",
+      "price": 63206.22,
+      "ahr999": 0.6948,
+      "fear_greed_value": 49,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-11",
+      "price": 62540.0,
+      "ahr999": 0.65,
+      "fear_greed_value": 32,
+      "fear_greed_classification": null
+    },
+    {
+      "date": "2024-10-10",
+      "ahr999": 0.6551
+    }
+  ]
+}
