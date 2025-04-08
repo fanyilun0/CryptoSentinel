@@ -146,7 +146,7 @@ async def get_ai_investment_advice():
             
             # 构建推送消息
             push_message = "🤖 AI投资顾问建议\n\n"
-            push_message += "\n".join(advice)
+            push_message += f"{advice}"
             
             # 推送消息
             await send_message_async(push_message)
@@ -178,7 +178,6 @@ async def main():
         # 显示欢迎信息
         print("\n====== 加密货币监控系统 ======")
         print("支持分析: BTC价格、AHR999指数和恐惧贪婪指数")
-        print("==============================\n")
 
         # 执行基本流程：更新数据+AI建议
         print("正在检查数据更新，请稍候...\n")
