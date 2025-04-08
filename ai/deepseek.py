@@ -225,58 +225,6 @@ class DeepseekAPI:
         logger.info(f"已保存投资建议记录: {filepath}")
         return {"record_id": record_id, "advice_data": advice_data}
     
-    def generate_and_save_investment_advice(self, data_json: str, last_record_id: str = None, debug: bool = False, **kwargs) -> Dict[str, Any]:
-        """生成投资建议并保存记录，可选择加载上次建议
-        
-        Args:
-            data_json: 包含历史价格和指标数据的JSON字符串
-            last_record_id: 上次建议的记录ID，如果提供，会加载该记录
-            debug: 是否开启调试模式，记录完整提示词
-            **kwargs: 传递给generate_investment_advice的其他参数
-            
-        Returns:
-            包含建议内容、记录ID和结构化建议数据的字典
-        """
-        # 尝试加载上次建议
-        last_advice = None
-        if last_record_id:
-            logger.info(f"正在加载上次投资建议: {last_record_id}")
-            last_record = self.load_investment_record(last_record_id)
-            if last_record:
-                # 首先尝试使用已解析的结构化数据
-                if "advice_data" in last_record and last_record["advice_data"]:
-                    last_advice = last_record["advice_data"]
-                    logger.info(f"成功加载上次建议数据: 仓位 {last_advice.get('position', 'N/A')}%")
-                # 如果没有结构化数据，尝试重新解析
-                elif "recommendation" in last_record:
-                    last_advice = extract_json_from_text(last_record["recommendation"])
-                    if last_advice:
-                        logger.info(f"从文本重新解析上次建议数据: 仓位 {last_advice.get('position', 'N/A')}%")
-        else:
-            logger.info("未提供上次记录ID，将生成首次投资建议")
-        
-        # 生成新建议
-        kwargs['debug'] = debug  # 传递调试标志
-        advice = self.generate_investment_advice(data_json, last_advice=last_advice, **kwargs)
-        
-        if not advice:
-            return {"success": False, "error": "生成投资建议失败"}
-        
-        # 保存记录并解析结构化数据
-        result = self.save_investment_record(
-            recommendation=advice,
-            data_json=data_json,
-            last_record_id=last_record_id,
-            user_settings=kwargs.get('user_settings', {})
-        )
-        
-        return {
-            "success": True,
-            "advice": advice,
-            "record_id": result["record_id"],
-            "advice_data": result["advice_data"]
-        }
-    
     def load_investment_record(self, record_id: str, records_dir: str = 'investment_records') -> Optional[Dict[str, Any]]:
         """加载投资建议记录
         
@@ -300,3 +248,100 @@ class DeepseekAPI:
         except Exception as e:
             logger.error(f"加载记录失败: {str(e)}")
             return None
+    
+    def load_latest_investment_record(self, records_dir: str = 'investment_records') -> Optional[Dict[str, Any]]:
+        """加载最新的投资建议记录
+        
+        通过文件名中的时间戳排序，找到最新的记录文件
+        
+        Args:
+            records_dir: 记录目录
+            
+        Returns:
+            最新的记录数据字典和记录ID，如果没有记录则返回None
+        """
+        if not os.path.exists(records_dir):
+            logger.warning(f"记录目录不存在: {records_dir}")
+            return None, None
+        
+        # 获取所有BTI开头的文件
+        try:
+            files = [f for f in os.listdir(records_dir) if f.startswith('BTI-') and f.endswith('.json')]
+            if not files:
+                logger.info(f"目录中没有找到投资建议记录: {records_dir}")
+                return None, None
+            
+            # 按文件名排序（基于时间戳）
+            files.sort(reverse=True)
+            latest_file = files[0]
+            record_id = latest_file.split('.')[0]  # 去掉.json后缀
+            
+            # 加载记录
+            record = self.load_investment_record(record_id, records_dir)
+            if record:
+                logger.info(f"成功加载最新的投资建议记录: {record_id}")
+                return record, record_id
+            else:
+                return None, None
+        except Exception as e:
+            logger.error(f"查找最新记录时出错: {str(e)}")
+            return None, None
+    
+    def generate_and_save_investment_advice(self, data_json: str, last_record_id: str = None, debug: bool = False, **kwargs) -> Dict[str, Any]:
+        """生成投资建议并保存记录，可选择加载上次建议
+        
+        Args:
+            data_json: 包含历史价格和指标数据的JSON字符串
+            last_record_id: 上次建议的记录ID，如果不提供，会自动加载最新记录
+            debug: 是否开启调试模式，记录完整提示词
+            **kwargs: 传递给generate_investment_advice的其他参数
+            
+        Returns:
+            包含建议内容、记录ID和结构化建议数据的字典
+        """
+        # 尝试加载上次建议
+        last_advice = None
+        
+        # 如果未提供上次记录ID，尝试自动找到最新记录
+        if not last_record_id:
+            logger.info("未提供上次记录ID，正在尝试自动加载最新记录")
+            last_record, last_record_id = self.load_latest_investment_record()
+        else:
+            logger.info(f"正在加载指定的上次投资建议: {last_record_id}")
+            last_record = self.load_investment_record(last_record_id)
+        
+        # 从记录中提取建议数据
+        if last_record:
+            # 首先尝试使用已解析的结构化数据
+            if "advice_data" in last_record and last_record["advice_data"]:
+                last_advice = last_record["advice_data"]
+                logger.info(f"成功加载上次建议数据: 仓位 {last_advice.get('position', 'N/A')}%")
+            # 如果没有结构化数据，尝试重新解析
+            elif "recommendation" in last_record:
+                last_advice = extract_json_from_text(last_record["recommendation"])
+                if last_advice:
+                    logger.info(f"从文本重新解析上次建议数据: 仓位 {last_advice.get('position', 'N/A')}%")
+        else:
+            logger.info("没有找到上次记录，将生成首次投资建议")
+        
+        # 生成新建议
+        kwargs['debug'] = debug  # 传递调试标志
+        advice = self.generate_investment_advice(data_json, last_advice=last_advice, **kwargs)
+        
+        if not advice:
+            return {"success": False, "error": "生成投资建议失败"}
+        
+        # 保存记录并解析结构化数据
+        result = self.save_investment_record(
+            recommendation=advice,
+            data_json=data_json,
+            last_record_id=last_record_id,
+            user_settings=kwargs.get('user_settings', {})
+        )
+        
+        return {
+            "success": True,
+            "advice": advice,
+            "record_id": result["record_id"],
+            "advice_data": result["advice_data"]
+        }

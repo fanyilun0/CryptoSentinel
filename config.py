@@ -20,23 +20,6 @@ ALWAYS_SEND = True
 INTERVAL = 86400  # 改为24小时检查一次
 TIME_OFFSET = 0
 
-# 阈值配置
-# 'thresholds': {
-#     'fear_greed': {
-#         'extreme_fear': 20,  # 极度恐慌阈值
-#         'fear': 40,          # 恐慌阈值
-#         'neutral': 60,       # 中性阈值
-#         'greed': 80          # 贪婪阈值
-#     },
-#     'ahr999': {
-#         'extreme_value': 0.25,  # 极度超卖阈值
-#         'oversold': 0.45,       # 超卖阈值
-#         'fair_value': 0.8,      # 公允价值阈值
-#         'overbought': 1.2,      # 超买阈值
-#         'extreme_bubble': 1.8   # 极度泡沫阈值
-#     }
-# }
-
 # 市场情绪指标配置
 MARKET_SENTIMENT = {
     # API端点
@@ -49,7 +32,7 @@ MARKET_SENTIMENT = {
 DEEPSEEK_AI = {
     'api_url': os.getenv('DEEPSEEK_API_URL', 'https://api.deepseek.com/v1/chat/completions'),
     'model': os.getenv('DEEPSEEK_MODEL', 'deepseek-chat'),
-    'temperature': 0.3,
+    'temperature': 0,
     'max_tokens': 4096,
     'top_p': 1.0,
     'stream': False

@@ -67,9 +67,9 @@ def reorganize_by_date(data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
             daily_data[date] = {'date': date}
             
         daily_data[date]['ahr999'] = item.get('ahr999')
-        for field in ['ma200', 'price_ma_ratio', 'ahr999_signal']:
-            if field in item:
-                daily_data[date][field] = item.get(field)
+        # for field in ['ma200', 'price_ma_ratio', 'ahr999_signal']:
+        #     if field in item:
+        #         daily_data[date][field] = item.get(field)
         # daily_data[date]['ahr999_timestamp'] = item.get('timestamp')
     
     # 处理恐惧与贪婪指数数据
@@ -82,7 +82,7 @@ def reorganize_by_date(data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
             daily_data[date] = {'date': date}
             
         daily_data[date]['fear_greed_value'] = item.get('value')
-        daily_data[date]['fear_greed_classification'] = item.get('classification')
+        # daily_data[date]['fear_greed_classification'] = item.get('classification')
         # daily_data[date]['fear_greed_timestamp'] = item.get('timestamp')
     
     logger.info(f"按日期重组了{len(daily_data)}天的数据")
