@@ -137,10 +137,10 @@ class HistoricalDataCollector:
             logger.info("没有现有历史数据或强制更新，收集新数据...")
             return await self.collect_historical_data()
         
-        # 检查数据是否过期（超过24小时）
+        # 检查数据是否过期（超过12小时）
         last_updated = old_data.get("last_updated", 0)
         current_time = int(time.time())
-        if (current_time - last_updated) >= 24 * 60 * 60:
+        if (current_time - last_updated) >= 12 * 60 * 60:
             logger.info(f"历史数据已过期，上次更新时间: {datetime.fromtimestamp(last_updated)}")
             new_data = await self.collect_historical_data()
             return self.merge_historical_data(old_data, new_data)

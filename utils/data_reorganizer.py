@@ -53,8 +53,8 @@ def reorganize_by_date(data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
             daily_data[date] = {'date': date}
             
         daily_data[date]['price'] = item.get('price')
-        daily_data[date]['market_cap'] = item.get('market_cap')
-        daily_data[date]['volume'] = item.get('volume')
+        # daily_data[date]['market_cap'] = item.get('market_cap')
+        # daily_data[date]['volume'] = item.get('volume')
         # daily_data[date]['btc_timestamp'] = item.get('timestamp')
     
     # 处理AHR999指数数据

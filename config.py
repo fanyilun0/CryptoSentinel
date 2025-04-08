@@ -44,3 +44,13 @@ MARKET_SENTIMENT = {
     'ahr999_url': 'https://dncapi.flink1.com/api/v2/index/arh999?code=bitcoin&webp=1',  # 使用当前实际工作的API
     'btc_price_url': 'https://api.binance.com/api/v3/klines',
 }
+
+# DeepSeek AI 配置
+DEEPSEEK_AI = {
+    'api_url': os.getenv('DEEPSEEK_API_URL', 'https://api.deepseek.com/v1/chat/completions'),
+    'model': os.getenv('DEEPSEEK_MODEL', 'deepseek-chat'),
+    'temperature': 0.3,
+    'max_tokens': 4096,
+    'top_p': 1.0,
+    'stream': False
+}

@@ -15,6 +15,9 @@ import requests
 from datetime import datetime
 from typing import Dict, Any, List, Optional, Union
 
+# 导入配置
+from config import DEEPSEEK_AI
+
 # 导入提示词模块
 from ai.prompt import (
     get_investment_advice_template, 
@@ -29,18 +32,15 @@ logger = logging.getLogger(__name__)
 class DeepseekAPI:
     """DeepSeek API接口类，提供与DeepSeek R1模型交互的方法"""
     
-    DEFAULT_API_URL = "https://api.deepseek.com/v1/chat/completions"
-    DEFAULT_MODEL = "deepseek-reasoner"
-    
     def __init__(self, api_key: str = None, api_url: str = None):
         """初始化DeepSeek API客户端
         
         Args:
             api_key: DeepSeek API密钥，如果为None则尝试从环境变量获取
-            api_url: 自定义API URL，如果为None则使用默认值
+            api_url: 自定义API URL，如果为None则使用配置中的值
         """
         self.api_key = api_key or os.environ.get("DEEPSEEK_API_KEY")
-        self.api_url = api_url or os.environ.get("DEEPSEEK_API_URL", self.DEFAULT_API_URL)
+        self.api_url = api_url or DEEPSEEK_AI['api_url']
         
         if not self.api_key:
             logger.warning("未设置DeepSeek API密钥，请通过环境变量DEEPSEEK_API_KEY或初始化参数提供")
@@ -55,21 +55,21 @@ class DeepseekAPI:
     
     def chat_completion(self, 
                         messages: List[Dict[str, str]], 
-                        model: str = DEFAULT_MODEL,
-                        temperature: float = 0.3,
-                        max_tokens: int = 4096,
-                        top_p: float = 1.0,
-                        stream: bool = False,
+                        model: str = None,
+                        temperature: float = None,
+                        max_tokens: int = None,
+                        top_p: float = None,
+                        stream: bool = None,
                         **kwargs) -> Optional[Dict[str, Any]]:
         """发送聊天补全请求至DeepSeek API
         
         Args:
             messages: 消息列表，格式为[{"role": "user", "content": "..."}, ...]
-            model: 使用的模型名称，默认为"deepseek-reasoner"
-            temperature: 采样温度，控制输出的随机性，默认为0.3
-            max_tokens: 最大生成的token数量，默认为4096
-            top_p: 核采样的概率质量，默认为1.0
-            stream: 是否使用流式响应，默认为False
+            model: 使用的模型名称，默认从配置读取
+            temperature: 采样温度，控制输出的随机性，默认从配置读取
+            max_tokens: 最大生成的token数量，默认从配置读取
+            top_p: 核采样的概率质量，默认从配置读取
+            stream: 是否使用流式响应，默认从配置读取
             **kwargs: 其他API参数
             
         Returns:
@@ -79,14 +79,14 @@ class DeepseekAPI:
             logger.error("未设置API密钥，无法调用DeepSeek API")
             return None
         
-        # 准备参数
+        # 准备参数，优先使用传入的参数，否则使用配置中的默认值
         payload = {
-            "model": model,
+            "model": model or DEEPSEEK_AI['model'],
             "messages": messages,
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-            "top_p": top_p,
-            "stream": stream
+            "temperature": temperature if temperature is not None else DEEPSEEK_AI['temperature'],
+            "max_tokens": max_tokens if max_tokens is not None else DEEPSEEK_AI['max_tokens'],
+            "top_p": top_p if top_p is not None else DEEPSEEK_AI['top_p'],
+            "stream": stream if stream is not None else DEEPSEEK_AI['stream']
         }
         
         # 添加其他可选参数
@@ -99,7 +99,7 @@ class DeepseekAPI:
         }
         
         try:
-            logger.info(f"正在调用DeepSeek API，模型: {model}")
+            logger.info(f"正在调用DeepSeek API，模型: {payload['model']}")
             response = requests.post(self.api_url, headers=headers, json=payload, timeout=60)
             
             if response.status_code == 200:
@@ -209,11 +209,11 @@ class DeepseekAPI:
         }
         
         # 如果提供了市场数据，也保存它
-        if data_json:
-            try:
-                record["market_data"] = json.loads(data_json)
-            except:
-                record["market_data_raw"] = data_json
+        # if data_json:
+        #     try:
+        #         record["market_data"] = json.loads(data_json)
+        #     except:
+        #         record["market_data_raw"] = data_json
         
         # 保存到文件
         filename = f"{record_id}.json"

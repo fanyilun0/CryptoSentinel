@@ -215,7 +215,7 @@ def get_ai_investment_advice():
         if advice:
             print("\n成功获取AI投资建议:")
             print("-" * 40)
-            print(advice[:500] + "...(更多内容已保存到报告文件)")
+            print(advice)
             print("-" * 40)
             
             print("\n投资建议已保存到'reports/ai_advice'目录")
@@ -260,8 +260,7 @@ async def main():
         print("正在检查数据更新，请稍候...\n")
         
         # 1. 更新历史数据
-        result = await generate_analysis_report(force_update=args.force)
-        print("数据处理完成。\n")
+        await generate_analysis_report(force_update=args.force)
         
         # 2. 整合数据
         try:
