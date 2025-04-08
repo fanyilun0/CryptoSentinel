@@ -227,25 +227,3 @@ def fix_data_file(data_file: str) -> bool:
         import traceback
         logger.debug(traceback.format_exc())
         return False
-
-# 使用示例
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    
-    data_dir = "data"
-    input_file = os.path.join(data_dir, "historical_data.json")
-    output_file = os.path.join(data_dir, "daily_data.json")
-    
-    print("重组数据工具")
-    print("=" * 40)
-    
-    # 重组数据
-    success = reorganize_data(input_file, output_file)
-    
-    if success:
-        print(f"数据重组成功! 已生成文件: {output_file}")
-        
-        # 额外检查生成的文件格式
-        fix_data_file(output_file)
-    else:
-        print("数据重组失败，请查看日志获取详细信息") 
