@@ -20,6 +20,16 @@ ALWAYS_SEND = True
 INTERVAL = 86400  # 改为24小时检查一次
 TIME_OFFSET = 0
 
+# 文件路径配置
+DATA_DIRS = {
+    'prompts': 'prompts',           # 提示词保存目录
+    'responses': 'responses',       # AI响应内容保存目录
+    'records': 'investment_records', # 投资建议记录保存目录
+    'debug': 'debug_logs',          # 调试日志保存目录
+    'data': 'data',                  # 市场数据保存目录
+    'reports': 'reports'              # 报告保存目录
+}
+
 # 市场情绪指标配置
 MARKET_SENTIMENT = {
     # API端点

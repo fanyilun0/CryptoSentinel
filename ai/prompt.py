@@ -11,7 +11,10 @@ import os
 import json
 import logging
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List, Union
+
+# 导入配置
+from config import DATA_DIRS
 
 # 设置日志
 logger = logging.getLogger(__name__)
@@ -143,25 +146,35 @@ def prepare_investment_advice_params(current_date: Optional[str] = None, last_ad
     
     return params
 
-def save_prompt_for_debug(prompt: str, current_date: str, debug_dir: str = 'debug_prompts') -> str:
-    """保存提示词到调试目录
+def save_prompt_for_debug(prompt: str, current_date: str = None) -> str:
+    """保存提示词到文件用于调试
     
     Args:
-        prompt: 提示词内容
-        current_date: 当前日期
-        debug_dir: 调试目录路径
+        prompt: 提示词文本
+        current_date: 当前日期，用于文件名
         
     Returns:
         保存的文件路径
     """
-    os.makedirs(debug_dir, exist_ok=True)
-    debug_file = os.path.join(debug_dir, f"prompt_{current_date.replace('-', '')}.txt")
+    if current_date is None:
+        current_date = datetime.now().strftime('%Y-%m-%d')
+        
+    # 确保调试目录存在
+    prompts_dir = DATA_DIRS['prompts']
+    os.makedirs(prompts_dir, exist_ok=True)
     
-    with open(debug_file, 'w', encoding='utf-8') as f:
+    # 创建文件名
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    filename = f"prompt_{timestamp}.txt"
+    
+    # 保存到提示词目录
+    prompt_path = os.path.join(prompts_dir, filename)
+    
+    with open(prompt_path, 'w', encoding='utf-8') as f:
         f.write(prompt)
     
-    logger.info(f"调试模式：已保存完整提示词到 {debug_file}")
-    return debug_file
+    logger.info(f"已保存提示词到: {prompt_path}")
+    return prompt_path
 
 def extract_json_from_text(text: str) -> Optional[Dict]:
     """从文本中提取JSON数据

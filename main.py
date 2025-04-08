@@ -14,6 +14,7 @@ from datetime import datetime
 import argparse
 
 # 导入自定义模块
+from config import DATA_DIRS
 from utils.historical_data import HistoricalDataCollector
 from utils.trend_analyzer import TrendAnalyzer
 from utils.data_reorganizer import reorganize_data, fix_data_file
@@ -58,10 +59,10 @@ async def generate_analysis_report(force_update=False):
     logger.info("开始生成分析报告...")
     
     # 创建数据目录
-    os.makedirs("data", exist_ok=True)
+    os.makedirs(DATA_DIRS['data'], exist_ok=True)
     
     # 初始化历史数据收集器
-    collector = HistoricalDataCollector(data_dir="data")
+    collector = HistoricalDataCollector(data_dir=DATA_DIRS['data'])
     
     # 获取/更新历史数据
     if force_update:
@@ -96,7 +97,7 @@ async def generate_analysis_report(force_update=False):
     report = advice.get("formatted_output", "")
     
     # 保存报告到文件
-    report_file = f"reports/report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    report_file = f"{DATA_DIRS['reports']}/report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
     with open(report_file, "w", encoding="utf-8") as f:
         f.write(report)
     
@@ -214,11 +215,7 @@ def get_ai_investment_advice():
         
         if advice:
             print("\n成功获取AI投资建议:")
-            print("-" * 40)
             print(advice)
-            print("-" * 40)
-            
-            print("\n投资建议已保存到'reports/ai_advice'目录")
         else:
             print("错误: 获取AI投资建议失败")
     
@@ -264,7 +261,7 @@ async def main():
         
         # 2. 整合数据
         try:
-            data_dir = "data"
+            data_dir = DATA_DIRS['data']
             input_file = os.path.join(data_dir, "historical_data.json")
             output_file = os.path.join(data_dir, "daily_data.json")
             

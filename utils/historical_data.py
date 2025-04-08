@@ -147,16 +147,3 @@ class HistoricalDataCollector:
         else:
             logger.info(f"历史数据未过期，上次更新时间: {datetime.fromtimestamp(last_updated)}")
             return old_data
-
-
-# 示例使用代码
-async def main():
-    collector = HistoricalDataCollector()
-    data = await collector.update_historical_data()
-    print(f"共获取到 {len(data.get('btc_price', []))} 条BTC价格数据")
-    print(f"共获取到 {len(data.get('ahr999', []))} 条AHR999指数数据")
-    print(f"共获取到 {len(data.get('fear_greed', []))} 条恐惧与贪婪指数数据")
-
-
-if __name__ == "__main__":
-    asyncio.run(main()) 

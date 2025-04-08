@@ -16,6 +16,9 @@ from typing import Dict, Any, Optional, List, Union
 # 导入DeepseekAPI
 from ai.deepseek import DeepseekAPI
 
+# 导入配置
+from config import DATA_DIRS
+
 # 设置日志
 logger = logging.getLogger(__name__)
 
@@ -33,7 +36,7 @@ class DeepseekAdvisor:
         self.api = DeepseekAPI(api_key=api_key, api_url=api_url)
         
         # 确保保存建议的目录存在
-        self.advice_dir = os.path.join("reports", "ai_advice")
+        self.advice_dir = os.path.join(DATA_DIRS['responses'])
         os.makedirs(self.advice_dir, exist_ok=True)
         
         logger.info("DeepSeek顾问初始化完成")
@@ -185,12 +188,11 @@ class DeepseekAdvisor:
             logger.debug(traceback.format_exc())
             return []
     
-    def _save_advice_to_file(self, advice: str, record_id: str) -> bool:
+    def _save_advice_to_file(self, advice: str) -> bool:
         """将投资建议保存到文件
         
         Args:
             advice: 投资建议文本
-            record_id: 建议记录ID
             
         Returns:
             是否成功保存
@@ -203,9 +205,6 @@ class DeepseekAdvisor:
             
             # 保存建议到文件
             with open(filepath, 'w', encoding='utf-8') as f:
-                f.write(f"投资建议记录ID: {record_id}\n")
-                f.write(f"生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-                f.write("=" * 50 + "\n\n")
                 f.write(advice)
             
             logger.info(f"投资建议已保存到: {filepath}")

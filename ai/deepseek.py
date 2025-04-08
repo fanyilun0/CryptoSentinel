@@ -16,7 +16,7 @@ from datetime import datetime
 from typing import Dict, Any, List, Optional, Union
 
 # 导入配置
-from config import DEEPSEEK_AI
+from config import DEEPSEEK_AI, DATA_DIRS
 
 # 导入提示词模块
 from ai.prompt import (
@@ -188,7 +188,7 @@ class DeepseekAPI:
             包含记录ID和解析后建议的字典
         """
         # 确保记录目录存在
-        records_dir = kwargs.get('records_dir', 'investment_records')
+        records_dir = kwargs.get('records_dir', DATA_DIRS['records'])
         os.makedirs(records_dir, exist_ok=True)
         
         # 创建记录ID
@@ -225,7 +225,7 @@ class DeepseekAPI:
         logger.info(f"已保存投资建议记录: {filepath}")
         return {"record_id": record_id, "advice_data": advice_data}
     
-    def load_investment_record(self, record_id: str, records_dir: str = 'investment_records') -> Optional[Dict[str, Any]]:
+    def load_investment_record(self, record_id: str, records_dir: str = None) -> Optional[Dict[str, Any]]:
         """加载投资建议记录
         
         Args:
@@ -235,6 +235,9 @@ class DeepseekAPI:
         Returns:
             记录数据字典，如果加载失败则返回None
         """
+        if records_dir is None:
+            records_dir = DATA_DIRS['records']
+            
         filepath = os.path.join(records_dir, f"{record_id}.json")
         
         if not os.path.exists(filepath):
@@ -249,7 +252,7 @@ class DeepseekAPI:
             logger.error(f"加载记录失败: {str(e)}")
             return None
     
-    def load_latest_investment_record(self, records_dir: str = 'investment_records') -> Optional[Dict[str, Any]]:
+    def load_latest_investment_record(self, records_dir: str = None) -> Optional[Dict[str, Any]]:
         """加载最新的投资建议记录
         
         通过文件名中的时间戳排序，找到最新的记录文件
@@ -260,6 +263,9 @@ class DeepseekAPI:
         Returns:
             最新的记录数据字典和记录ID，如果没有记录则返回None
         """
+        if records_dir is None:
+            records_dir = DATA_DIRS['records']
+            
         if not os.path.exists(records_dir):
             logger.warning(f"记录目录不存在: {records_dir}")
             return None, None
