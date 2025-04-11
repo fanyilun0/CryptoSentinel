@@ -1,9 +1,24 @@
 {
   "btc_price": [
     {
+      "timestamp": 1744329600000,
+      "date": "2025-04-11",
+      "price": 79086.95
+    },
+    {
+      "timestamp": 1744243200000,
+      "date": "2025-04-10",
+      "price": 79607.3
+    },
+    {
+      "timestamp": 1744156800000,
+      "date": "2025-04-09",
+      "price": 82615.22
+    },
+    {
       "timestamp": 1744070400000,
       "date": "2025-04-08",
-      "price": 79446.73
+      "price": 76322.42
     },
     {
       "timestamp": 1743984000000,
@@ -884,28 +899,33 @@
       "timestamp": 1728864000000,
       "date": "2024-10-14",
       "price": 66083.99
-    },
-    {
-      "timestamp": 1728777600000,
-      "date": "2024-10-13",
-      "price": 62870.02
-    },
-    {
-      "timestamp": 1728691200000,
-      "date": "2024-10-12",
-      "price": 63206.22
-    },
-    {
-      "timestamp": 1728604800000,
-      "date": "2024-10-11",
-      "price": 62540.0
     }
   ],
   "ahr999": [
     {
-      "timestamp": 1744004990,
+      "timestamp": 1744333463,
+      "date": "2025-04-11",
+      "ahr999": 0.6919
+    },
+    {
+      "timestamp": 1744185589,
+      "date": "2025-04-09",
+      "ahr999": 0.67
+    },
+    {
+      "timestamp": 1744099208,
+      "date": "2025-04-08",
+      "ahr999": 0.7022
+    },
+    {
+      "timestamp": 1744012792,
       "date": "2025-04-07",
-      "ahr999": 0.6603
+      "ahr999": 0.629
+    },
+    {
+      "timestamp": 1743926394,
+      "date": "2025-04-06",
+      "ahr999": 0.7705
     },
     {
       "timestamp": 1743839999,
@@ -1781,29 +1801,27 @@
       "timestamp": 1728201598,
       "date": "2024-10-06",
       "ahr999": 0.6799
-    },
-    {
-      "timestamp": 1728115196,
-      "date": "2024-10-05",
-      "ahr999": 0.6829
-    },
-    {
-      "timestamp": 1728028816,
-      "date": "2024-10-04",
-      "ahr999": 0.6692
-    },
-    {
-      "timestamp": 1727942371,
-      "date": "2024-10-03",
-      "ahr999": 0.6587
-    },
-    {
-      "timestamp": 1727856010,
-      "date": "2024-10-02",
-      "ahr999": 0.6758
     }
   ],
   "fear_greed": [
+    {
+      "timestamp": 1744329600,
+      "date": "2025-04-11",
+      "value": 25,
+      "value_classification": "Extreme Fear"
+    },
+    {
+      "timestamp": 1744243200,
+      "date": "2025-04-10",
+      "value": 39,
+      "value_classification": "Fear"
+    },
+    {
+      "timestamp": 1744156800,
+      "date": "2025-04-09",
+      "value": 18,
+      "value_classification": "Extreme Fear"
+    },
     {
       "timestamp": 1744070400,
       "date": "2025-04-08",
@@ -2859,25 +2877,7 @@
       "date": "2024-10-14",
       "value": 48,
       "value_classification": "Neutral"
-    },
-    {
-      "timestamp": 1728777600,
-      "date": "2024-10-13",
-      "value": 50,
-      "value_classification": "Neutral"
-    },
-    {
-      "timestamp": 1728691200,
-      "date": "2024-10-12",
-      "value": 49,
-      "value_classification": "Neutral"
-    },
-    {
-      "timestamp": 1728604800,
-      "date": "2024-10-11",
-      "value": 32,
-      "value_classification": "Fear"
     }
   ],
-  "last_updated": 1744083621
+  "last_updated": 1744333513
 }

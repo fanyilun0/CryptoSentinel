@@ -1,22 +1,6 @@
 {
   "data": [
     {
-      "date": "2024-10-02",
-      "ahr999": 0.6758
-    },
-    {
-      "date": "2024-10-03",
-      "ahr999": 0.6587
-    },
-    {
-      "date": "2024-10-04",
-      "ahr999": 0.6692
-    },
-    {
-      "date": "2024-10-05",
-      "ahr999": 0.6829
-    },
-    {
       "date": "2024-10-06",
       "ahr999": 0.6799
     },
@@ -38,21 +22,15 @@
     },
     {
       "date": "2024-10-11",
-      "price": 62540.0,
-      "ahr999": 0.65,
-      "fear_greed_value": 32
+      "ahr999": 0.65
     },
     {
       "date": "2024-10-12",
-      "price": 63206.22,
-      "ahr999": 0.6948,
-      "fear_greed_value": 49
+      "ahr999": 0.6948
     },
     {
       "date": "2024-10-13",
-      "price": 62870.02,
-      "ahr999": 0.6961,
-      "fear_greed_value": 50
+      "ahr999": 0.6961
     },
     {
       "date": "2024-10-14",
@@ -1093,20 +1071,39 @@
     {
       "date": "2025-04-06",
       "price": 78430.0,
+      "ahr999": 0.7705,
       "fear_greed_value": 34
     },
     {
       "date": "2025-04-07",
       "price": 79163.24,
-      "ahr999": 0.6603,
+      "ahr999": 0.629,
       "fear_greed_value": 23
     },
     {
       "date": "2025-04-08",
-      "price": 79446.73,
+      "price": 76322.42,
+      "ahr999": 0.7022,
       "fear_greed_value": 24
+    },
+    {
+      "date": "2025-04-09",
+      "price": 82615.22,
+      "ahr999": 0.67,
+      "fear_greed_value": 18
+    },
+    {
+      "date": "2025-04-10",
+      "price": 79607.3,
+      "fear_greed_value": 39
+    },
+    {
+      "date": "2025-04-11",
+      "price": 79086.95,
+      "ahr999": 0.6919,
+      "fear_greed_value": 25
     }
   ],
-  "count": 189,
+  "count": 188,
   "description": "Daily combined BTC price, AHR999 index and Fear & Greed index data"
 }
