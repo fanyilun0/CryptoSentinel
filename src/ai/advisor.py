@@ -42,7 +42,7 @@ class DeepseekAdvisor:
         logger.info("DeepSeek顾问初始化完成")
     
     def get_investment_advice(self, data_file: str, months: int = 3, last_record_id: str = None, 
-                            debug: bool = False, **kwargs) -> Optional[str]:
+                            debug: bool = False, max_retries: int = 3, retry_delay: float = 2.0, **kwargs) -> Optional[str]:
         """获取投资建议
         
         Args:
@@ -50,6 +50,8 @@ class DeepseekAdvisor:
             months: 分析最近几个月的数据
             last_record_id: 上次建议的记录ID，用于连续性建议
             debug: 是否开启调试模式
+            max_retries: 最大重试次数
+            retry_delay: 重试间隔时间（秒）
             **kwargs: 其他参数传递给API
             
         Returns:
@@ -73,6 +75,8 @@ class DeepseekAdvisor:
                 data_json=data_json,
                 last_record_id=last_record_id,
                 debug=debug,
+                max_retries=max_retries,
+                retry_delay=retry_delay,
                 **kwargs
             )
             

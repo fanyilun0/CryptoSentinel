@@ -12,6 +12,7 @@ import os
 import json
 import logging
 import requests
+import time
 from datetime import datetime
 from typing import Dict, Any, List, Optional, Union
 
@@ -60,6 +61,8 @@ class DeepseekAPI:
                         max_tokens: int = None,
                         top_p: float = None,
                         stream: bool = None,
+                        max_retries: int = 3,
+                        retry_delay: float = 2.0,
                         **kwargs) -> Optional[Dict[str, Any]]:
         """发送聊天补全请求至DeepSeek API
         
@@ -70,6 +73,8 @@ class DeepseekAPI:
             max_tokens: 最大生成的token数量，默认从配置读取
             top_p: 核采样的概率质量，默认从配置读取
             stream: 是否使用流式响应，默认从配置读取
+            max_retries: 最大重试次数
+            retry_delay: 重试间隔时间（秒）
             **kwargs: 其他API参数
             
         Returns:
@@ -98,39 +103,102 @@ class DeepseekAPI:
             "Authorization": f"Bearer {self.api_key}"
         }
         
-        try:
-            logger.info(f"正在调用DeepSeek API，模型: {payload['model']}")
-            response = requests.post(self.api_url, headers=headers, json=payload, timeout=60)
+        # 实现重试逻辑
+        retries = 0
+        while retries <= max_retries:
+            try:
+                logger.info(f"正在调用DeepSeek API，模型: {payload['model']}，尝试次数: {retries + 1}/{max_retries + 1}")
+                response = requests.post(self.api_url, headers=headers, json=payload, timeout=60)
+                
+                if response.status_code == 200:
+                    logger.info("DeepSeek API调用成功")
+                    return response.json()
+                elif response.status_code == 429:  # 速率限制
+                    logger.warning(f"API调用受到限制 (429)，等待重试...")
+                    retries += 1
+                    if retries <= max_retries:
+                        # 等待时间指数增长
+                        wait_time = retry_delay * (2 ** (retries - 1))
+                        logger.info(f"等待 {wait_time} 秒后重试...")
+                        time.sleep(wait_time)
+                    else:
+                        logger.error(f"达到最大重试次数，API调用失败: {response.status_code} - {response.text}")
+                        return None
+                elif response.status_code >= 500:  # 服务器错误
+                    logger.warning(f"服务器错误 ({response.status_code})，尝试重试...")
+                    retries += 1
+                    if retries <= max_retries:
+                        wait_time = retry_delay * (2 ** (retries - 1))
+                        logger.info(f"等待 {wait_time} 秒后重试...")
+                        time.sleep(wait_time)
+                    else:
+                        logger.error(f"达到最大重试次数，API调用失败: {response.status_code} - {response.text}")
+                        return None
+                else:
+                    # 其他错误（如验证失败、参数错误等）不进行重试
+                    logger.error(f"API调用失败: {response.status_code} - {response.text}")
+                    return None
             
-            if response.status_code == 200:
-                logger.info("DeepSeek API调用成功")
-                return response.json()
-            else:
-                logger.error(f"API调用失败: {response.status_code} - {response.text}")
-                return None
+            except requests.exceptions.Timeout:
+                logger.warning("API请求超时，尝试重试...")
+                retries += 1
+                if retries <= max_retries:
+                    wait_time = retry_delay * (2 ** (retries - 1))
+                    logger.info(f"等待 {wait_time} 秒后重试...")
+                    time.sleep(wait_time)
+                else:
+                    logger.error("达到最大重试次数，API请求超时")
+                    return None
+            except requests.exceptions.ConnectionError:
+                logger.warning("API连接错误，尝试重试...")
+                retries += 1
+                if retries <= max_retries:
+                    wait_time = retry_delay * (2 ** (retries - 1))
+                    logger.info(f"等待 {wait_time} 秒后重试...")
+                    time.sleep(wait_time)
+                else:
+                    logger.error("达到最大重试次数，API连接失败")
+                    return None
+            except requests.exceptions.RequestException as e:
+                # 其他requests异常
+                logger.error(f"API请求异常: {str(e)}")
+                retries += 1
+                if retries <= max_retries:
+                    wait_time = retry_delay * (2 ** (retries - 1))
+                    logger.info(f"等待 {wait_time} 秒后重试...")
+                    time.sleep(wait_time)
+                else:
+                    logger.error(f"达到最大重试次数，API请求失败: {str(e)}")
+                    return None
+            except Exception as e:
+                logger.error(f"调用DeepSeek API出错: {str(e)}")
+                retries += 1
+                if retries <= max_retries:
+                    wait_time = retry_delay * (2 ** (retries - 1))
+                    logger.info(f"等待 {wait_time} 秒后重试...")
+                    time.sleep(wait_time)
+                else:
+                    logger.error(f"达到最大重试次数，发生未知错误: {str(e)}")
+                    return None
         
-        except requests.exceptions.RequestException as e:
-            # 合并所有requests异常处理
-            logger.error(f"API请求异常: {str(e)}")
-            return None
-        except Exception as e:
-            logger.error(f"调用DeepSeek API出错: {str(e)}")
-            return None
+        return None
     
-    def generate_text(self, prompt: str, **kwargs) -> Optional[str]:
+    def generate_text(self, prompt: str, max_retries: int = 3, retry_delay: float = 2.0, **kwargs) -> Optional[str]:
         """使用单一提示词生成文本响应
         
         这是chat_completion的简化版本，方便单个提示词的使用场景
         
         Args:
             prompt: 提示词文本
+            max_retries: 最大重试次数
+            retry_delay: 重试间隔时间（秒）
             **kwargs: 传递给chat_completion的其他参数
             
         Returns:
             生成的文本内容，如果调用失败则返回None
         """
         messages = [{"role": "user", "content": prompt}]
-        response = self.chat_completion(messages, **kwargs)
+        response = self.chat_completion(messages, max_retries=max_retries, retry_delay=retry_delay, **kwargs)
         
         if response:
             
@@ -145,12 +213,14 @@ class DeepseekAPI:
         
         return None
     
-    def generate_investment_advice(self, data_json: str, last_advice: Dict = None, **kwargs) -> Optional[str]:
+    def generate_investment_advice(self, data_json: str, last_advice: Dict = None, max_retries: int = 3, retry_delay: float = 2.0, **kwargs) -> Optional[str]:
         """生成加密货币投资建议
         
         Args:
             data_json: 包含历史价格和指标数据的JSON字符串
             last_advice: 上次生成的建议，JSON格式，可选
+            max_retries: 最大重试次数
+            retry_delay: 重试间隔时间（秒）
             **kwargs: 传递给generate_text的其他参数
             
         Returns:
@@ -175,7 +245,7 @@ class DeepseekAPI:
         
         save_prompt_for_debug(prompt)
         
-        return self.generate_text(prompt, **kwargs)
+        return self.generate_text(prompt, max_retries=max_retries, retry_delay=retry_delay, **kwargs)
     
     def save_investment_record(self, recommendation: str, data_json: str = None, **kwargs) -> Dict[str, Any]:
         """保存投资建议记录，并解析JSON格式的操作摘要
@@ -293,13 +363,16 @@ class DeepseekAPI:
             logger.error(f"查找最新记录时出错: {str(e)}")
             return None, None
     
-    def generate_and_save_investment_advice(self, data_json: str, last_record_id: str = None, debug: bool = False, **kwargs) -> Dict[str, Any]:
+    def generate_and_save_investment_advice(self, data_json: str, last_record_id: str = None, debug: bool = False, 
+                                 max_retries: int = 3, retry_delay: float = 2.0, **kwargs) -> Dict[str, Any]:
         """生成投资建议并保存记录，可选择加载上次建议
         
         Args:
             data_json: 包含历史价格和指标数据的JSON字符串
             last_record_id: 上次建议的记录ID，如果不提供，会自动加载最新记录
             debug: 是否开启调试模式，记录完整提示词
+            max_retries: 最大重试次数
+            retry_delay: 重试间隔时间（秒）
             **kwargs: 传递给generate_investment_advice的其他参数
             
         Returns:
@@ -330,25 +403,47 @@ class DeepseekAPI:
         else:
             logger.info("没有找到上次记录，将生成首次投资建议")
         
-        advice = self.generate_investment_advice(data_json, last_advice=last_advice, **kwargs)
-        
-        if not advice:
-            return {"success": False, "error": "生成投资建议失败"}
-        
-        # 保存记录并解析结构化数据
-        result = self.save_investment_record(
-            recommendation=advice,
-            data_json=data_json,
-            last_record_id=last_record_id,
-            user_settings=kwargs.get('user_settings', {})
+        # 将重试参数传递给generate_investment_advice
+        advice = self.generate_investment_advice(
+            data_json, 
+            last_advice=last_advice, 
+            max_retries=max_retries,
+            retry_delay=retry_delay,
+            **kwargs
         )
         
-        return {
-            "success": True,
-            "advice": advice,
-            "record_id": result["record_id"],
-            "advice_data": result["advice_data"]
-        }
+        if not advice:
+            logger.error("生成投资建议失败，即使在重试后")
+            return {"success": False, "error": "生成投资建议失败，请检查API连接和配置"}
+        
+        try:
+            # 保存记录并解析结构化数据
+            result = self.save_investment_record(
+                recommendation=advice,
+                data_json=data_json,
+                last_record_id=last_record_id,
+                user_settings=kwargs.get('user_settings', {})
+            )
+            
+            return {
+                "success": True,
+                "advice": advice,
+                "record_id": result["record_id"],
+                "advice_data": result["advice_data"]
+            }
+        except Exception as e:
+            logger.error(f"保存投资建议记录时出错: {str(e)}")
+            import traceback
+            logger.debug(traceback.format_exc())
+            
+            # 尽管保存失败，仍然返回建议内容
+            return {
+                "success": True,
+                "advice": advice,
+                "record_id": f"temp-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+                "advice_data": extract_json_from_text(advice) or {},
+                "save_error": str(e)
+            }
 
     def save_response_to_file(self, response):
         """
