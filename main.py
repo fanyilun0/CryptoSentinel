@@ -112,6 +112,10 @@ async def get_ai_investment_advice():
     months = 6
     print(f"将分析最近{months}个月的数据")
     
+    # 设置重试参数
+    max_retries = 3
+    retry_delay = 2.0
+    
     try:
         # 尝试读取数据文件，检查是否包含'responses'键
         try:
@@ -138,7 +142,14 @@ async def get_ai_investment_advice():
         
         # 获取投资建议
         print("\n正在获取AI投资建议，请稍候...\n")
-        advice = advisor.get_investment_advice(data_file, months)
+        print(f"已配置最大重试次数: {max_retries}，重试间隔: {retry_delay}秒")
+        
+        advice = advisor.get_investment_advice(
+            data_file=data_file, 
+            months=months, 
+            max_retries=max_retries, 
+            retry_delay=retry_delay
+        )
         
         if advice:
             print("\n成功获取AI投资建议:")
@@ -152,6 +163,8 @@ async def get_ai_investment_advice():
             await send_message_async(push_message)
         else:
             print("错误: 获取AI投资建议失败")
+            print("可能原因: API服务器连接问题、API密钥无效或请求超时")
+            print("建议: 检查网络连接、API密钥设置和服务器状态")
     
     except KeyError as e:
         logger.error(f"AI投资建议处理过程中出现键错误: {str(e)}")
@@ -165,6 +178,11 @@ async def get_ai_investment_advice():
     except Exception as e:
         logger.error(f"AI投资建议处理过程中出错: {str(e)}")
         print(f"错误: {str(e)}")
+        print("尝试获取详细错误信息...")
+        import traceback
+        error_details = traceback.format_exc()
+        logger.debug(error_details)
+        print(f"错误详情已记录到日志文件")
 
 async def main():
     """主函数
