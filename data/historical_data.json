@@ -1,9 +1,34 @@
 {
   "btc_price": [
     {
+      "timestamp": 1744761600000,
+      "date": "2025-04-16",
+      "price": 83640.59
+    },
+    {
+      "timestamp": 1744675200000,
+      "date": "2025-04-15",
+      "price": 83643.99
+    },
+    {
+      "timestamp": 1744588800000,
+      "date": "2025-04-14",
+      "price": 84591.58
+    },
+    {
+      "timestamp": 1744502400000,
+      "date": "2025-04-13",
+      "price": 83760.0
+    },
+    {
+      "timestamp": 1744416000000,
+      "date": "2025-04-12",
+      "price": 85276.9
+    },
+    {
       "timestamp": 1744329600000,
       "date": "2025-04-11",
-      "price": 79086.95
+      "price": 83423.84
     },
     {
       "timestamp": 1744243200000,
@@ -874,38 +899,38 @@
       "timestamp": 1729296000000,
       "date": "2024-10-19",
       "price": 68378.0
-    },
-    {
-      "timestamp": 1729209600000,
-      "date": "2024-10-18",
-      "price": 68428.0
-    },
-    {
-      "timestamp": 1729123200000,
-      "date": "2024-10-17",
-      "price": 67421.78
-    },
-    {
-      "timestamp": 1729036800000,
-      "date": "2024-10-16",
-      "price": 67620.01
-    },
-    {
-      "timestamp": 1728950400000,
-      "date": "2024-10-15",
-      "price": 67074.14
-    },
-    {
-      "timestamp": 1728864000000,
-      "date": "2024-10-14",
-      "price": 66083.99
     }
   ],
   "ahr999": [
     {
-      "timestamp": 1744333463,
+      "timestamp": 1744761323,
+      "date": "2025-04-16",
+      "ahr999": 0.764
+    },
+    {
+      "timestamp": 1744617612,
+      "date": "2025-04-14",
+      "ahr999": 0.7825
+    },
+    {
+      "timestamp": 1744531204,
+      "date": "2025-04-13",
+      "ahr999": 0.7825
+    },
+    {
+      "timestamp": 1744444811,
+      "date": "2025-04-12",
+      "ahr999": 0.7698
+    },
+    {
+      "timestamp": 1744358403,
       "date": "2025-04-11",
-      "ahr999": 0.6919
+      "ahr999": 0.728
+    },
+    {
+      "timestamp": 1744271996,
+      "date": "2025-04-10",
+      "ahr999": 0.736
     },
     {
       "timestamp": 1744185589,
@@ -1776,34 +1801,39 @@
       "timestamp": 1728633598,
       "date": "2024-10-11",
       "ahr999": 0.65
-    },
-    {
-      "timestamp": 1728547199,
-      "date": "2024-10-10",
-      "ahr999": 0.6551
-    },
-    {
-      "timestamp": 1728460816,
-      "date": "2024-10-09",
-      "ahr999": 0.6855
-    },
-    {
-      "timestamp": 1728374392,
-      "date": "2024-10-08",
-      "ahr999": 0.6867
-    },
-    {
-      "timestamp": 1728288001,
-      "date": "2024-10-07",
-      "ahr999": 0.7145
-    },
-    {
-      "timestamp": 1728201598,
-      "date": "2024-10-06",
-      "ahr999": 0.6799
     }
   ],
   "fear_greed": [
+    {
+      "timestamp": 1744761600,
+      "date": "2025-04-16",
+      "value": 29,
+      "value_classification": "Fear"
+    },
+    {
+      "timestamp": 1744675200,
+      "date": "2025-04-15",
+      "value": 38,
+      "value_classification": "Fear"
+    },
+    {
+      "timestamp": 1744588800,
+      "date": "2025-04-14",
+      "value": 31,
+      "value_classification": "Fear"
+    },
+    {
+      "timestamp": 1744502400,
+      "date": "2025-04-13",
+      "value": 45,
+      "value_classification": "Fear"
+    },
+    {
+      "timestamp": 1744416000,
+      "date": "2025-04-12",
+      "value": 43,
+      "value_classification": "Fear"
+    },
     {
       "timestamp": 1744329600,
       "date": "2025-04-11",
@@ -2847,37 +2877,7 @@
       "date": "2024-10-19",
       "value": 72,
       "value_classification": "Greed"
-    },
-    {
-      "timestamp": 1729209600,
-      "date": "2024-10-18",
-      "value": 73,
-      "value_classification": "Greed"
-    },
-    {
-      "timestamp": 1729123200,
-      "date": "2024-10-17",
-      "value": 71,
-      "value_classification": "Greed"
-    },
-    {
-      "timestamp": 1729036800,
-      "date": "2024-10-16",
-      "value": 73,
-      "value_classification": "Greed"
-    },
-    {
-      "timestamp": 1728950400,
-      "date": "2024-10-15",
-      "value": 65,
-      "value_classification": "Greed"
-    },
-    {
-      "timestamp": 1728864000,
-      "date": "2024-10-14",
-      "value": 48,
-      "value_classification": "Neutral"
     }
   ],
-  "last_updated": 1744333513
+  "last_updated": 1744761603
 }

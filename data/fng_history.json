@@ -2,10 +2,35 @@
   "name": "Fear and Greed Index",
   "data": [
     {
+      "value": "29",
+      "value_classification": "Fear",
+      "timestamp": "1744761600",
+      "time_until_update": "86397"
+    },
+    {
+      "value": "38",
+      "value_classification": "Fear",
+      "timestamp": "1744675200"
+    },
+    {
+      "value": "31",
+      "value_classification": "Fear",
+      "timestamp": "1744588800"
+    },
+    {
+      "value": "45",
+      "value_classification": "Fear",
+      "timestamp": "1744502400"
+    },
+    {
+      "value": "43",
+      "value_classification": "Fear",
+      "timestamp": "1744416000"
+    },
+    {
       "value": "25",
       "value_classification": "Extreme Fear",
-      "timestamp": "1744329600",
-      "time_until_update": "82487"
+      "timestamp": "1744329600"
     },
     {
       "value": "39",
