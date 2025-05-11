@@ -177,7 +177,7 @@ async def get_ai_investment_advice():
     
     except Exception as e:
         logger.error(f"AI投资建议处理过程中出错: {str(e)}")
-        print(f"错误: {str(e)}")
+        print(f"错误: {str(e)}")    
         print("尝试获取详细错误信息...")
         import traceback
         error_details = traceback.format_exc()
