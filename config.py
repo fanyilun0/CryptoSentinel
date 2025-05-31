@@ -39,7 +39,7 @@ DEEPSEEK_AI = {
     'api_url': os.getenv('DEEPSEEK_API_URL', 'https://api.deepseek.com/v1/chat/completions'),
     'model': os.getenv('DEEPSEEK_MODEL', 'deepseek-reasoner'),
     'temperature': 0,
-    'max_tokens': 4096,
+    'max_tokens': 16000,
     'top_p': 1.0,
     'stream': False
 }

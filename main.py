@@ -113,7 +113,7 @@ async def get_ai_investment_advice():
     print(f"将分析最近{months}个月的数据")
     
     # 设置重试参数
-    max_retries = 3
+    max_retries = 2
     retry_delay = 2.0
     
     try:
