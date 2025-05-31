@@ -2,10 +2,110 @@
   "name": "Fear and Greed Index",
   "data": [
     {
+      "value": "50",
+      "value_classification": "Neutral",
+      "timestamp": "1748649600",
+      "time_until_update": "86395"
+    },
+    {
+      "value": "60",
+      "value_classification": "Greed",
+      "timestamp": "1748563200"
+    },
+    {
+      "value": "74",
+      "value_classification": "Greed",
+      "timestamp": "1748476800"
+    },
+    {
+      "value": "71",
+      "value_classification": "Greed",
+      "timestamp": "1748390400"
+    },
+    {
+      "value": "74",
+      "value_classification": "Greed",
+      "timestamp": "1748304000"
+    },
+    {
+      "value": "73",
+      "value_classification": "Greed",
+      "timestamp": "1748217600"
+    },
+    {
+      "value": "74",
+      "value_classification": "Greed",
+      "timestamp": "1748131200"
+    },
+    {
+      "value": "66",
+      "value_classification": "Greed",
+      "timestamp": "1748044800"
+    },
+    {
+      "value": "78",
+      "value_classification": "Extreme Greed",
+      "timestamp": "1747958400"
+    },
+    {
+      "value": "72",
+      "value_classification": "Greed",
+      "timestamp": "1747872000"
+    },
+    {
       "value": "70",
       "value_classification": "Greed",
-      "timestamp": "1746921600",
-      "time_until_update": "86398"
+      "timestamp": "1747785600"
+    },
+    {
+      "value": "71",
+      "value_classification": "Greed",
+      "timestamp": "1747699200"
+    },
+    {
+      "value": "74",
+      "value_classification": "Greed",
+      "timestamp": "1747612800"
+    },
+    {
+      "value": "74",
+      "value_classification": "Greed",
+      "timestamp": "1747526400"
+    },
+    {
+      "value": "74",
+      "value_classification": "Greed",
+      "timestamp": "1747440000"
+    },
+    {
+      "value": "71",
+      "value_classification": "Greed",
+      "timestamp": "1747353600"
+    },
+    {
+      "value": "70",
+      "value_classification": "Greed",
+      "timestamp": "1747267200"
+    },
+    {
+      "value": "73",
+      "value_classification": "Greed",
+      "timestamp": "1747180800"
+    },
+    {
+      "value": "70",
+      "value_classification": "Greed",
+      "timestamp": "1747094400"
+    },
+    {
+      "value": "70",
+      "value_classification": "Greed",
+      "timestamp": "1747008000"
+    },
+    {
+      "value": "70",
+      "value_classification": "Greed",
+      "timestamp": "1746921600"
     },
     {
       "value": "70",

@@ -1,9 +1,109 @@
 {
   "btc_price": [
     {
+      "timestamp": 1748649600000,
+      "date": "2025-05-31",
+      "price": 104465.23
+    },
+    {
+      "timestamp": 1748563200000,
+      "date": "2025-05-30",
+      "price": 103985.48
+    },
+    {
+      "timestamp": 1748476800000,
+      "date": "2025-05-29",
+      "price": 105589.75
+    },
+    {
+      "timestamp": 1748390400000,
+      "date": "2025-05-28",
+      "price": 107781.78
+    },
+    {
+      "timestamp": 1748304000000,
+      "date": "2025-05-27",
+      "price": 108938.17
+    },
+    {
+      "timestamp": 1748217600000,
+      "date": "2025-05-26",
+      "price": 109434.79
+    },
+    {
+      "timestamp": 1748131200000,
+      "date": "2025-05-25",
+      "price": 109004.19
+    },
+    {
+      "timestamp": 1748044800000,
+      "date": "2025-05-24",
+      "price": 107761.91
+    },
+    {
+      "timestamp": 1747958400000,
+      "date": "2025-05-23",
+      "price": 107318.3
+    },
+    {
+      "timestamp": 1747872000000,
+      "date": "2025-05-22",
+      "price": 111696.21
+    },
+    {
+      "timestamp": 1747785600000,
+      "date": "2025-05-21",
+      "price": 109643.99
+    },
+    {
+      "timestamp": 1747699200000,
+      "date": "2025-05-20",
+      "price": 106849.99
+    },
+    {
+      "timestamp": 1747612800000,
+      "date": "2025-05-19",
+      "price": 105573.74
+    },
+    {
+      "timestamp": 1747526400000,
+      "date": "2025-05-18",
+      "price": 106454.26
+    },
+    {
+      "timestamp": 1747440000000,
+      "date": "2025-05-17",
+      "price": 103126.65
+    },
+    {
+      "timestamp": 1747353600000,
+      "date": "2025-05-16",
+      "price": 103463.9
+    },
+    {
+      "timestamp": 1747267200000,
+      "date": "2025-05-15",
+      "price": 103763.71
+    },
+    {
+      "timestamp": 1747180800000,
+      "date": "2025-05-14",
+      "price": 103507.82
+    },
+    {
+      "timestamp": 1747094400000,
+      "date": "2025-05-13",
+      "price": 104103.72
+    },
+    {
+      "timestamp": 1747008000000,
+      "date": "2025-05-12",
+      "price": 102791.32
+    },
+    {
       "timestamp": 1746921600000,
       "date": "2025-05-11",
-      "price": 104809.53
+      "price": 104118.0
     },
     {
       "timestamp": 1746835200000,
@@ -799,113 +899,108 @@
       "timestamp": 1733184000000,
       "date": "2024-12-03",
       "price": 95849.69
-    },
-    {
-      "timestamp": 1733097600000,
-      "date": "2024-12-02",
-      "price": 95840.62
-    },
-    {
-      "timestamp": 1733011200000,
-      "date": "2024-12-01",
-      "price": 97185.18
-    },
-    {
-      "timestamp": 1732924800000,
-      "date": "2024-11-30",
-      "price": 96407.99
-    },
-    {
-      "timestamp": 1732838400000,
-      "date": "2024-11-29",
-      "price": 97460.0
-    },
-    {
-      "timestamp": 1732752000000,
-      "date": "2024-11-28",
-      "price": 95643.98
-    },
-    {
-      "timestamp": 1732665600000,
-      "date": "2024-11-27",
-      "price": 95863.11
-    },
-    {
-      "timestamp": 1732579200000,
-      "date": "2024-11-26",
-      "price": 91965.16
-    },
-    {
-      "timestamp": 1732492800000,
-      "date": "2024-11-25",
-      "price": 93010.01
-    },
-    {
-      "timestamp": 1732406400000,
-      "date": "2024-11-24",
-      "price": 97900.04
-    },
-    {
-      "timestamp": 1732320000000,
-      "date": "2024-11-23",
-      "price": 97672.4
-    },
-    {
-      "timestamp": 1732233600000,
-      "date": "2024-11-22",
-      "price": 98892.0
-    },
-    {
-      "timestamp": 1732147200000,
-      "date": "2024-11-21",
-      "price": 98317.12
-    },
-    {
-      "timestamp": 1732060800000,
-      "date": "2024-11-20",
-      "price": 94286.56
-    },
-    {
-      "timestamp": 1731974400000,
-      "date": "2024-11-19",
-      "price": 92310.79
-    },
-    {
-      "timestamp": 1731888000000,
-      "date": "2024-11-18",
-      "price": 90464.08
-    },
-    {
-      "timestamp": 1731801600000,
-      "date": "2024-11-17",
-      "price": 89855.99
-    },
-    {
-      "timestamp": 1731715200000,
-      "date": "2024-11-16",
-      "price": 90586.92
-    },
-    {
-      "timestamp": 1731628800000,
-      "date": "2024-11-15",
-      "price": 91032.07
-    },
-    {
-      "timestamp": 1731542400000,
-      "date": "2024-11-14",
-      "price": 87325.59
-    },
-    {
-      "timestamp": 1731456000000,
-      "date": "2024-11-13",
-      "price": 90375.2
     }
   ],
   "ahr999": [
     {
-      "timestamp": 1746921317,
+      "timestamp": 1748649598,
+      "date": "2025-05-31",
+      "ahr999": 1.0297
+    },
+    {
+      "timestamp": 1748505603,
+      "date": "2025-05-29",
+      "ahr999": 1.1158
+    },
+    {
+      "timestamp": 1748419186,
+      "date": "2025-05-28",
+      "ahr999": 1.1386
+    },
+    {
+      "timestamp": 1748332811,
+      "date": "2025-05-27",
+      "ahr999": 1.1586
+    },
+    {
+      "timestamp": 1748246410,
+      "date": "2025-05-26",
+      "ahr999": 1.174
+    },
+    {
+      "timestamp": 1748160015,
+      "date": "2025-05-25",
+      "ahr999": 1.126
+    },
+    {
+      "timestamp": 1748073613,
+      "date": "2025-05-24",
+      "ahr999": 1.1285
+    },
+    {
+      "timestamp": 1747987203,
+      "date": "2025-05-23",
+      "ahr999": 1.1993
+    },
+    {
+      "timestamp": 1747900765,
+      "date": "2025-05-22",
+      "ahr999": 1.2061
+    },
+    {
+      "timestamp": 1747814401,
+      "date": "2025-05-21",
+      "ahr999": 1.1178
+    },
+    {
+      "timestamp": 1747728013,
+      "date": "2025-05-20",
+      "ahr999": 1.0858
+    },
+    {
+      "timestamp": 1747641603,
+      "date": "2025-05-19",
+      "ahr999": 1.0529
+    },
+    {
+      "timestamp": 1747468787,
+      "date": "2025-05-17",
+      "ahr999": 1.0646
+    },
+    {
+      "timestamp": 1747382399,
+      "date": "2025-05-16",
+      "ahr999": 1.0699
+    },
+    {
+      "timestamp": 1747296001,
+      "date": "2025-05-15",
+      "ahr999": 1.0341
+    },
+    {
+      "timestamp": 1747209602,
+      "date": "2025-05-14",
+      "ahr999": 1.0764
+    },
+    {
+      "timestamp": 1747123204,
+      "date": "2025-05-13",
+      "ahr999": 1.0585
+    },
+    {
+      "timestamp": 1747036799,
+      "date": "2025-05-12",
+      "ahr999": 1.0976
+    },
+    {
+      "timestamp": 1746950399,
       "date": "2025-05-11",
-      "ahr999": 1.1114
+      "ahr999": 1.0799
+    },
+    {
+      "timestamp": 1746863998,
+      "date": "2025-05-10",
+      "ahr999": 1.0922
     },
     {
       "timestamp": 1746777599,
@@ -1706,104 +1801,129 @@
       "timestamp": 1732435214,
       "date": "2024-11-24",
       "ahr999": 1.5881
-    },
-    {
-      "timestamp": 1732348804,
-      "date": "2024-11-23",
-      "ahr999": 1.5975
-    },
-    {
-      "timestamp": 1732262394,
-      "date": "2024-11-22",
-      "ahr999": 1.6225
-    },
-    {
-      "timestamp": 1732176010,
-      "date": "2024-11-21",
-      "ahr999": 1.5549
-    },
-    {
-      "timestamp": 1732089610,
-      "date": "2024-11-20",
-      "ahr999": 1.4311
-    },
-    {
-      "timestamp": 1732003199,
-      "date": "2024-11-19",
-      "ahr999": 1.3976
-    },
-    {
-      "timestamp": 1731916811,
-      "date": "2024-11-18",
-      "ahr999": 1.4055
-    },
-    {
-      "timestamp": 1731830395,
-      "date": "2024-11-17",
-      "ahr999": 1.3738
-    },
-    {
-      "timestamp": 1731743999,
-      "date": "2024-11-16",
-      "ahr999": 1.395
-    },
-    {
-      "timestamp": 1731657617,
-      "date": "2024-11-15",
-      "ahr999": 1.2941
-    },
-    {
-      "timestamp": 1731571193,
-      "date": "2024-11-14",
-      "ahr999": 1.3928
-    },
-    {
-      "timestamp": 1731484797,
-      "date": "2024-11-13",
-      "ahr999": 1.2927
-    },
-    {
-      "timestamp": 1731398399,
-      "date": "2024-11-12",
-      "ahr999": 1.3448
-    },
-    {
-      "timestamp": 1731312007,
-      "date": "2024-11-11",
-      "ahr999": 1.1199
-    },
-    {
-      "timestamp": 1731225616,
-      "date": "2024-11-10",
-      "ahr999": 1.0607
-    },
-    {
-      "timestamp": 1731139207,
-      "date": "2024-11-09",
-      "ahr999": 1.0008
-    },
-    {
-      "timestamp": 1731052814,
-      "date": "2024-11-08",
-      "ahr999": 0.9932
-    },
-    {
-      "timestamp": 1730966398,
-      "date": "2024-11-07",
-      "ahr999": 0.9591
-    },
-    {
-      "timestamp": 1730879998,
-      "date": "2024-11-06",
-      "ahr999": 0.9253
-    },
-    {
-      "timestamp": 1730793605,
-      "date": "2024-11-05",
-      "ahr999": 0.8175
     }
   ],
   "fear_greed": [
+    {
+      "timestamp": 1748649600,
+      "date": "2025-05-31",
+      "value": 50,
+      "value_classification": "Neutral"
+    },
+    {
+      "timestamp": 1748563200,
+      "date": "2025-05-30",
+      "value": 60,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1748476800,
+      "date": "2025-05-29",
+      "value": 74,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1748390400,
+      "date": "2025-05-28",
+      "value": 71,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1748304000,
+      "date": "2025-05-27",
+      "value": 74,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1748217600,
+      "date": "2025-05-26",
+      "value": 73,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1748131200,
+      "date": "2025-05-25",
+      "value": 74,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1748044800,
+      "date": "2025-05-24",
+      "value": 66,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1747958400,
+      "date": "2025-05-23",
+      "value": 78,
+      "value_classification": "Extreme Greed"
+    },
+    {
+      "timestamp": 1747872000,
+      "date": "2025-05-22",
+      "value": 72,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1747785600,
+      "date": "2025-05-21",
+      "value": 70,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1747699200,
+      "date": "2025-05-20",
+      "value": 71,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1747612800,
+      "date": "2025-05-19",
+      "value": 74,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1747526400,
+      "date": "2025-05-18",
+      "value": 74,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1747440000,
+      "date": "2025-05-17",
+      "value": 74,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1747353600,
+      "date": "2025-05-16",
+      "value": 71,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1747267200,
+      "date": "2025-05-15",
+      "value": 70,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1747180800,
+      "date": "2025-05-14",
+      "value": 73,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1747094400,
+      "date": "2025-05-13",
+      "value": 70,
+      "value_classification": "Greed"
+    },
+    {
+      "timestamp": 1747008000,
+      "date": "2025-05-12",
+      "value": 70,
+      "value_classification": "Greed"
+    },
     {
       "timestamp": 1746921600,
       "date": "2025-05-11",
@@ -2763,127 +2883,7 @@
       "date": "2024-12-03",
       "value": 76,
       "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1733097600,
-      "date": "2024-12-02",
-      "value": 80,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1733011200,
-      "date": "2024-12-01",
-      "value": 81,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1732924800,
-      "date": "2024-11-30",
-      "value": 84,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1732838400,
-      "date": "2024-11-29",
-      "value": 78,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1732752000,
-      "date": "2024-11-28",
-      "value": 77,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1732665600,
-      "date": "2024-11-27",
-      "value": 75,
-      "value_classification": "Greed"
-    },
-    {
-      "timestamp": 1732579200,
-      "date": "2024-11-26",
-      "value": 79,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1732492800,
-      "date": "2024-11-25",
-      "value": 82,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1732406400,
-      "date": "2024-11-24",
-      "value": 80,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1732320000,
-      "date": "2024-11-23",
-      "value": 93,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1732233600,
-      "date": "2024-11-22",
-      "value": 94,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1732147200,
-      "date": "2024-11-21",
-      "value": 82,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1732060800,
-      "date": "2024-11-20",
-      "value": 83,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1731974400,
-      "date": "2024-11-19",
-      "value": 90,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1731888000,
-      "date": "2024-11-18",
-      "value": 83,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1731801600,
-      "date": "2024-11-17",
-      "value": 90,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1731715200,
-      "date": "2024-11-16",
-      "value": 86,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1731628800,
-      "date": "2024-11-15",
-      "value": 80,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1731542400,
-      "date": "2024-11-14",
-      "value": 88,
-      "value_classification": "Extreme Greed"
-    },
-    {
-      "timestamp": 1731456000,
-      "date": "2024-11-13",
-      "value": 84,
-      "value_classification": "Extreme Greed"
     }
   ],
-  "last_updated": 1746975766
+  "last_updated": 1748711167
 }
