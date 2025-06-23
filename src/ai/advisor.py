@@ -203,7 +203,7 @@ class DeepseekAdvisor:
         try:
             # 生成文件名
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            filename = f"advice_{timestamp}.txt"
+            filename = f"advice_{timestamp}.md"
             filepath = os.path.join(self.advice_dir, filename)
             
             # 保存建议到文件
