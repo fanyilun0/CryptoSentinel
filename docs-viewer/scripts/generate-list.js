@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // 源目录和目标目录
-const sourceDir = path.join(__dirname, '../../advices/all-platforms');
+const sourceDir = path.join(__dirname, '../../advices');
 const targetDir = path.join(__dirname, '../public/advices');
 
 // 确保目标目录存在
