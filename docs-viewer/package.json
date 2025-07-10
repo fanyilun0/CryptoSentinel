@@ -13,6 +13,7 @@
     "generate-list": "node scripts/generate-list.js"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.5.0",
     "@vueuse/core": "^10.7.0",
     "@vueuse/head": "^1.0.0",
     "cors": "^2.8.5",
