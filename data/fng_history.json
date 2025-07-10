@@ -2,10 +2,90 @@
   "name": "Fear and Greed Index",
   "data": [
     {
+      "value": "66",
+      "value_classification": "Greed",
+      "timestamp": "1752019200",
+      "time_until_update": "5397"
+    },
+    {
+      "value": "65",
+      "value_classification": "Greed",
+      "timestamp": "1751932800"
+    },
+    {
+      "value": "73",
+      "value_classification": "Greed",
+      "timestamp": "1751846400"
+    },
+    {
+      "value": "66",
+      "value_classification": "Greed",
+      "timestamp": "1751760000"
+    },
+    {
+      "value": "67",
+      "value_classification": "Greed",
+      "timestamp": "1751673600"
+    },
+    {
+      "value": "73",
+      "value_classification": "Greed",
+      "timestamp": "1751587200"
+    },
+    {
+      "value": "73",
+      "value_classification": "Greed",
+      "timestamp": "1751500800"
+    },
+    {
+      "value": "63",
+      "value_classification": "Greed",
+      "timestamp": "1751414400"
+    },
+    {
+      "value": "64",
+      "value_classification": "Greed",
+      "timestamp": "1751328000"
+    },
+    {
+      "value": "66",
+      "value_classification": "Greed",
+      "timestamp": "1751241600"
+    },
+    {
+      "value": "68",
+      "value_classification": "Greed",
+      "timestamp": "1751155200"
+    },
+    {
+      "value": "65",
+      "value_classification": "Greed",
+      "timestamp": "1751068800"
+    },
+    {
+      "value": "65",
+      "value_classification": "Greed",
+      "timestamp": "1750982400"
+    },
+    {
+      "value": "74",
+      "value_classification": "Greed",
+      "timestamp": "1750896000"
+    },
+    {
+      "value": "66",
+      "value_classification": "Greed",
+      "timestamp": "1750809600"
+    },
+    {
+      "value": "65",
+      "value_classification": "Greed",
+      "timestamp": "1750723200"
+    },
+    {
       "value": "47",
       "value_classification": "Neutral",
-      "timestamp": "1750636800",
-      "time_until_update": "5397"
+      "timestamp": "1750636800"
     },
     {
       "value": "42",

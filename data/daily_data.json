@@ -1,123 +1,24 @@
 {
   "data": [
     {
-      "date": "2024-12-20",
-      "ahr999": 1.4547
-    },
-    {
-      "date": "2024-12-21",
-      "ahr999": 1.4875
-    },
-    {
-      "date": "2024-12-22",
-      "ahr999": 1.3987
-    },
-    {
-      "date": "2024-12-23",
-      "ahr999": 1.3716
-    },
-    {
-      "date": "2024-12-24",
-      "ahr999": 1.3357
-    },
-    {
-      "date": "2024-12-25",
-      "ahr999": 1.443
-    },
-    {
-      "date": "2024-12-26",
-      "price": 95791.6,
-      "ahr999": 1.429,
-      "fear_greed_value": 79
-    },
-    {
-      "date": "2024-12-27",
-      "price": 94299.03,
-      "ahr999": 1.3499,
-      "fear_greed_value": 74
-    },
-    {
-      "date": "2024-12-28",
-      "price": 95300.0,
-      "ahr999": 1.3259,
-      "fear_greed_value": 72
-    },
-    {
-      "date": "2024-12-29",
-      "price": 93738.2,
-      "ahr999": 1.3476,
-      "fear_greed_value": 73
-    },
-    {
-      "date": "2024-12-30",
-      "price": 92792.05,
-      "ahr999": 1.3014,
-      "fear_greed_value": 65
-    },
-    {
-      "date": "2024-12-31",
-      "price": 93576.0,
-      "fear_greed_value": 64
-    },
-    {
-      "date": "2025-01-01",
-      "price": 94591.79,
-      "ahr999": 1.2955,
-      "fear_greed_value": 66
-    },
-    {
-      "date": "2025-01-02",
-      "price": 96984.79,
-      "ahr999": 1.3517,
-      "fear_greed_value": 70
-    },
-    {
-      "date": "2025-01-03",
-      "price": 98174.18,
-      "ahr999": 1.3619,
-      "fear_greed_value": 74
-    },
-    {
-      "date": "2025-01-04",
-      "price": 98220.5,
-      "ahr999": 1.4132,
-      "fear_greed_value": 73
-    },
-    {
-      "date": "2025-01-05",
-      "price": 98363.61,
-      "ahr999": 1.4084,
-      "fear_greed_value": 72
-    },
-    {
       "date": "2025-01-06",
-      "price": 102235.6,
-      "ahr999": 1.435,
-      "fear_greed_value": 76
+      "ahr999": 1.435
     },
     {
       "date": "2025-01-07",
-      "price": 96954.61,
-      "ahr999": 1.4989,
-      "fear_greed_value": 78
+      "ahr999": 1.4989
     },
     {
       "date": "2025-01-08",
-      "price": 95060.61,
-      "ahr999": 1.3229,
-      "fear_greed_value": 70
+      "ahr999": 1.3229
     },
     {
       "date": "2025-01-09",
-      "price": 92552.49,
-      "ahr999": 1.2532,
-      "fear_greed_value": 69
+      "ahr999": 1.2532
     },
     {
       "date": "2025-01-10",
-      "price": 94726.11,
-      "ahr999": 1.2844,
-      "fear_greed_value": 50
+      "ahr999": 1.2844
     },
     {
       "date": "2025-01-11",
@@ -1094,14 +995,110 @@
     },
     {
       "date": "2025-06-23",
-      "price": 106025.74,
+      "price": 105333.93,
+      "ahr999": 0.9449,
       "fear_greed_value": 47
     },
     {
       "date": "2025-06-24",
-      "ahr999": 1.0192
+      "price": 106083.0,
+      "ahr999": 1.002,
+      "fear_greed_value": 65
+    },
+    {
+      "date": "2025-06-25",
+      "price": 107340.58,
+      "ahr999": 1.032,
+      "fear_greed_value": 66
+    },
+    {
+      "date": "2025-06-26",
+      "price": 106947.06,
+      "ahr999": 1.0541,
+      "fear_greed_value": 74
+    },
+    {
+      "date": "2025-06-27",
+      "price": 107047.59,
+      "ahr999": 1.0342,
+      "fear_greed_value": 65
+    },
+    {
+      "date": "2025-06-28",
+      "price": 107296.79,
+      "ahr999": 1.0435,
+      "fear_greed_value": 65
+    },
+    {
+      "date": "2025-06-29",
+      "price": 108356.93,
+      "ahr999": 1.0396,
+      "fear_greed_value": 68
+    },
+    {
+      "date": "2025-06-30",
+      "price": 107146.5,
+      "ahr999": 1.0433,
+      "fear_greed_value": 66
+    },
+    {
+      "date": "2025-07-01",
+      "price": 105681.14,
+      "ahr999": 1.033,
+      "fear_greed_value": 64
+    },
+    {
+      "date": "2025-07-02",
+      "price": 108849.6,
+      "ahr999": 1.0306,
+      "fear_greed_value": 63
+    },
+    {
+      "date": "2025-07-03",
+      "price": 109584.78,
+      "ahr999": 1.0716,
+      "fear_greed_value": 73
+    },
+    {
+      "date": "2025-07-04",
+      "price": 107984.24,
+      "ahr999": 1.0585,
+      "fear_greed_value": 73
+    },
+    {
+      "date": "2025-07-05",
+      "price": 108198.12,
+      "ahr999": 1.0449,
+      "fear_greed_value": 67
+    },
+    {
+      "date": "2025-07-06",
+      "price": 109203.84,
+      "ahr999": 1.0421,
+      "fear_greed_value": 66
+    },
+    {
+      "date": "2025-07-07",
+      "price": 108262.94,
+      "ahr999": 1.0607,
+      "fear_greed_value": 73
+    },
+    {
+      "date": "2025-07-08",
+      "price": 108922.98,
+      "ahr999": 1.048,
+      "fear_greed_value": 65
+    },
+    {
+      "date": "2025-07-09",
+      "price": 111084.55,
+      "fear_greed_value": 66
+    },
+    {
+      "date": "2025-07-10",
+      "ahr999": 1.1009
     }
   ],
-  "count": 187,
+  "count": 186,
   "description": "Daily combined BTC price, AHR999 index and Fear & Greed index data"
 }
