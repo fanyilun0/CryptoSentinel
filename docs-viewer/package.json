@@ -4,13 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/generate-list.js && vite",
+    "dev": "NODE_ENV=development node scripts/generate-list.js --dev && vite",
     "build": "node scripts/generate-list.js && vite build",
     "preview": "vite preview",
     "start": "node server.js",
     "copy-files": "mkdir -p dist/advices && cp -r ../advices/all-platforms/*.md dist/advices && ls -la dist/advices",
     "clean": "rm -rf dist",
-    "generate-list": "node scripts/generate-list.js"
+    "generate-list": "node scripts/generate-list.js",
+    "generate-list:dev": "NODE_ENV=development node scripts/generate-list.js --dev",
+    "generate-list:build": "node scripts/generate-list.js"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",

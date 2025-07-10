@@ -28,3 +28,10 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Public advices directory (soft links and copied files)
+public/advices/*.md
+public/advices/list.json
+
+# Soft links (开发环境软连接文件)
+public/advices/advice_*.md
