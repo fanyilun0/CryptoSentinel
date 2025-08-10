@@ -40,7 +40,7 @@ class DeepseekAPI:
             api_key: DeepSeek API密钥，如果为None则尝试从环境变量获取
             api_url: 自定义API URL，如果为None则使用配置中的值
         """
-        self.api_key = api_key or os.environ.get("DEEPSEEK_API_KEY")
+        self.api_key = api_key or DEEPSEEK_AI['api_key']
         self.api_url = api_url or DEEPSEEK_AI['api_url']
         
         if not self.api_key:
@@ -108,7 +108,7 @@ class DeepseekAPI:
         while retries <= max_retries:
             try:
                 logger.info(f"正在调用DeepSeek API，模型: {payload['model']}，尝试次数: {retries + 1}/{max_retries + 1}")
-                response = requests.post(self.api_url, headers=headers, json=payload, timeout=60)
+                response = requests.post(self.api_url, headers=headers, json=payload, timeout=600)
                 
                 if response.status_code == 200:
                     logger.info("DeepSeek API调用成功")
