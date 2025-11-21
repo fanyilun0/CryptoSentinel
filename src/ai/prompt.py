@@ -163,7 +163,6 @@ def get_investment_advice_template(current_date: str, last_position: int = 0,
 11. 提供明确的数值和百分比，避免模糊表述
 12. 确保每个风险因素都有相应的应对策略
 13. 所有历史数据比较需具体说明数值和时间点
-14. 历史数据是按时间从旧到新排列的，最后一条是最新数据
 """
 
 def prepare_investment_advice_params(current_date: Optional[str] = None, 
