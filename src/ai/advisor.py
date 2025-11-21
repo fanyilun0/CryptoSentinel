@@ -179,10 +179,10 @@ class DeepseekAdvisor:
                 filtered_data = all_data[:min(100, len(all_data))]
                 logger.info(f"返回所有可用数据（最多100条）")
             
-            # 按日期降序排序（最新的在前）
-            filtered_data.sort(key=lambda x: x.get('date', ''), reverse=True)
+            # 按日期升序排序（最旧的在前，最新的在后）
+            filtered_data.sort(key=lambda x: x.get('date', ''), reverse=False)
             
-            logger.info(f"已准备{len(filtered_data)}条数据供AI分析，时间范围: {filtered_data[-1]['date'] if filtered_data else 'N/A'} 至 {filtered_data[0]['date'] if filtered_data else 'N/A'}")
+            logger.info(f"已准备{len(filtered_data)}条数据供AI分析，时间范围: {filtered_data[0]['date'] if filtered_data else 'N/A'} 至 {filtered_data[-1]['date'] if filtered_data else 'N/A'}")
             return filtered_data
             
         except Exception as e:

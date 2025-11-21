@@ -91,9 +91,9 @@ def reorganize_by_date(data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
 def save_daily_data(daily_data: Dict[str, Dict[str, Any]], file_path: str) -> bool:
     """保存按日期组织的数据"""
     try:
-        # 将字典转换为列表，并按日期排序
+        # 将字典转换为列表，并按日期升序排序（从旧到新）
         data_list = list(daily_data.values())
-        data_list.sort(key=lambda x: x['date'])
+        data_list.sort(key=lambda x: x['date'], reverse=False)
         
         # 创建包含元数据的完整数据结构
         complete_data = {
