@@ -1,7 +1,7 @@
 """
 数据重组模块 - 将历史数据按日期重新组织
 
-提供功能将BTC价格、AHR999指数和恐惧贪婪指数数据
+提供功能将BTC价格、MVRV比率和恐惧贪婪指数数据
 按照日期合并，生成一个新的daily_data.json文件。
 """
 
@@ -35,9 +35,8 @@ def reorganize_by_date(data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
     if not data:
         return {}
     
-    # 获取各种数据源
     btc_price_data = data.get('btc_price', [])
-    ahr999_data = data.get('ahr999', [])
+    mvrv_data = data.get('mvrv', [])
     fear_greed_data = data.get('fear_greed', [])
     
     # 创建按日期索引的字典
@@ -57,8 +56,7 @@ def reorganize_by_date(data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         # daily_data[date]['volume'] = item.get('volume')
         # daily_data[date]['btc_timestamp'] = item.get('timestamp')
     
-    # 处理AHR999指数数据
-    for item in ahr999_data:
+    for item in mvrv_data:
         date = item.get('date')
         if not date:
             continue
@@ -66,11 +64,7 @@ def reorganize_by_date(data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         if date not in daily_data:
             daily_data[date] = {'date': date}
             
-        daily_data[date]['ahr999'] = item.get('ahr999')
-        # for field in ['ma200', 'price_ma_ratio', 'ahr999_signal']:
-        #     if field in item:
-        #         daily_data[date][field] = item.get(field)
-        # daily_data[date]['ahr999_timestamp'] = item.get('timestamp')
+        daily_data[date]['mvrv'] = item.get('mvrv')
     
     # 处理恐惧与贪婪指数数据
     for item in fear_greed_data:
@@ -100,7 +94,7 @@ def save_daily_data(daily_data: Dict[str, Dict[str, Any]], file_path: str) -> bo
             "data": data_list,
             "count": len(data_list),
             # "generated_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            "description": "Daily combined BTC price, AHR999 index and Fear & Greed index data"
+            "description": "Daily combined BTC price, MVRV ratio and Fear & Greed index data"
         }
         
         with open(file_path, 'w', encoding='utf-8') as f:

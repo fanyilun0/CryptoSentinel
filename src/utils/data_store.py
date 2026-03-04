@@ -53,7 +53,7 @@ class DataStore:
                         'price': market_data.get('btc_price')
                     },
                     'sentiment': {
-                        'ahr999': market_data.get('ahr999'),
+                        'mvrv': market_data.get('mvrv'),
                         'fear_greed': market_data.get('fear_greed')
                     }
                 }
@@ -71,12 +71,11 @@ class DataStore:
             else:
                 print("BTC数据: 无\n")
             
-            # 打印市场情绪数据
             print("市场情绪数据:")
-            if data['market']['sentiment']['ahr999'] is not None:
-                print(f"📉 AHR999指数: {data['market']['sentiment']['ahr999']:.4f}")
+            if data['market']['sentiment']['mvrv'] is not None:
+                print(f"📊 MVRV比率: {data['market']['sentiment']['mvrv']:.4f}")
             else:
-                print("📉 AHR999指数: 无")
+                print("📊 MVRV比率: 无")
                 
             if data['market']['sentiment']['fear_greed'] is not None:
                 print(f"😱 恐慌贪婪指数: {data['market']['sentiment']['fear_greed']}")
@@ -113,10 +112,10 @@ class DataStore:
                 record_lines.append("BTC: 无数据")
             
             # 市场情绪数据
-            if data['market']['sentiment']['ahr999'] is not None:
-                record_lines.append(f"AHR999: {data['market']['sentiment']['ahr999']:.2f}")
+            if data['market']['sentiment']['mvrv'] is not None:
+                record_lines.append(f"MVRV: {data['market']['sentiment']['mvrv']:.4f}")
             else:
-                record_lines.append("AHR999: 无数据")
+                record_lines.append("MVRV: 无数据")
             
             if data['market']['sentiment']['fear_greed'] is not None:
                 record_lines.append(f"恐慌贪婪: {data['market']['sentiment']['fear_greed']}")
@@ -191,7 +190,7 @@ class DataStore:
             # 情绪指标变化
             if 'sentiment' in old_data['market'] and 'sentiment' in new_data['market']:
                 sentiment_changes = {}
-                for key in ['ahr999', 'fear_greed']:
+                for key in ['mvrv', 'fear_greed']:
                     if (key in old_data['market']['sentiment'] and 
                         key in new_data['market']['sentiment'] and
                         old_data['market']['sentiment'][key] is not None and 

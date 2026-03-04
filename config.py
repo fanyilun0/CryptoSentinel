@@ -31,6 +31,7 @@ MARKET_SENTIMENT = {
     # API端点
     'fear_greed_url': 'https://api.alternative.me/fng/',  # 不带limit参数，在代码中添加
     'ahr999_url': 'https://dncapi.flink1.com/api/v2/index/arh999?code=bitcoin&webp=1',  # 使用当前实际工作的API
+    'mvrv_url': 'https://community-api.coinmetrics.io/v4/timeseries/asset-metrics',  # CoinMetrics社区API (免费)
     'btc_price_url': 'https://api.binance.com/api/v3/klines',
 }
 

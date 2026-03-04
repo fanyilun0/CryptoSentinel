@@ -113,7 +113,7 @@ class TrendAnalyzer:
         }
     
     def analyze_sentiment_trends(self):
-        """分析AHR999和恐惧贪婪指数趋势"""
+        """分析MVRV比率和恐惧贪婪指数趋势"""
         logger.info("分析市场情绪指标趋势...")
         
         if not self.historical_data:
@@ -123,100 +123,83 @@ class TrendAnalyzer:
                 "message": "没有历史数据可供分析"
             }
         
-        # 分析AHR999指数
-        ahr999_analysis = self._analyze_ahr999()
-        
-        # 分析恐惧与贪婪指数
+        mvrv_analysis = self._analyze_mvrv()
         fear_greed_analysis = self._analyze_fear_greed()
         
-        # 合并分析结果
         return {
-            "status": "success" if ahr999_analysis["status"] == "success" or fear_greed_analysis["status"] == "success" else "error",
-            "ahr999": ahr999_analysis,
+            "status": "success" if mvrv_analysis["status"] == "success" or fear_greed_analysis["status"] == "success" else "error",
+            "mvrv": mvrv_analysis,
             "fear_greed": fear_greed_analysis
         }
     
-    def _analyze_ahr999(self):
-        """分析AHR999指数"""
-        if not self.historical_data or "ahr999" not in self.historical_data:
-            logger.error("没有AHR999指数历史数据可供分析")
+    def _analyze_mvrv(self):
+        """分析MVRV比率"""
+        if not self.historical_data or "mvrv" not in self.historical_data:
+            logger.error("没有MVRV比率历史数据可供分析")
             return {
                 "status": "error",
-                "message": "没有AHR999指数历史数据可供分析"
+                "message": "没有MVRV比率历史数据可供分析"
             }
         
-        # 获取AHR999指数数据
-        ahr_data = self.historical_data["ahr999"]
+        mvrv_data = self.historical_data["mvrv"]
+        mvrv_data = sorted(mvrv_data, key=lambda x: x.get("timestamp", 0), reverse=True)
+        mvrv_data = mvrv_data[:self.analysis_period]
         
-        # 确保数据按日期降序排序（最新的在前面）
-        ahr_data = sorted(ahr_data, key=lambda x: x.get("timestamp", 0), reverse=True)
-        
-        # 限制为最近的分析期数据
-        ahr_data = ahr_data[:self.analysis_period]
-        
-        if not ahr_data:
-            logger.error("AHR999指数数据为空")
+        if not mvrv_data:
+            logger.error("MVRV比率数据为空")
             return {
                 "status": "error",
-                "message": "AHR999指数数据为空"
+                "message": "MVRV比率数据为空"
             }
         
-        # 提取AHR999值
-        ahr_values = [item.get("ahr999", 0) for item in ahr_data if "ahr999" in item]
-        dates = [item.get("date", "") for item in ahr_data if "date" in item]
+        mvrv_values = [item.get("mvrv", 0) for item in mvrv_data if "mvrv" in item]
+        dates = [item.get("date", "") for item in mvrv_data if "date" in item]
         
-        if len(ahr_values) < 7:
-            logger.error(f"AHR999指数数据不足，只有{len(ahr_values)}天，至少需要7天数据")
+        if len(mvrv_values) < 7:
+            logger.error(f"MVRV比率数据不足，只有{len(mvrv_values)}天，至少需要7天数据")
             return {
                 "status": "error",
-                "message": f"AHR999指数数据不足，只有{len(ahr_values)}天，至少需要7天数据"
+                "message": f"MVRV比率数据不足，只有{len(mvrv_values)}天，至少需要7天数据"
             }
         
-        # 计算当前AHR999值和各周期平均值
-        current_ahr = ahr_values[0]
-        avg_7d = np.mean(ahr_values[:7]) if len(ahr_values) >= 7 else None
-        avg_30d = np.mean(ahr_values[:30]) if len(ahr_values) >= 30 else None
+        current_mvrv = mvrv_values[0]
+        avg_7d = np.mean(mvrv_values[:7]) if len(mvrv_values) >= 7 else None
+        avg_30d = np.mean(mvrv_values[:30]) if len(mvrv_values) >= 30 else None
         
-        # 计算AHR999变化百分比
-        ahr_change_1d = ((current_ahr / ahr_values[1]) - 1) * 100 if len(ahr_values) > 1 else 0
-        ahr_change_7d = ((current_ahr / ahr_values[6]) - 1) * 100 if len(ahr_values) > 6 else 0
-        ahr_change_30d = ((current_ahr / ahr_values[29]) - 1) * 100 if len(ahr_values) > 29 else 0
+        mvrv_change_1d = ((current_mvrv / mvrv_values[1]) - 1) * 100 if len(mvrv_values) > 1 and mvrv_values[1] != 0 else 0
+        mvrv_change_7d = ((current_mvrv / mvrv_values[6]) - 1) * 100 if len(mvrv_values) > 6 and mvrv_values[6] != 0 else 0
+        mvrv_change_30d = ((current_mvrv / mvrv_values[29]) - 1) * 100 if len(mvrv_values) > 29 and mvrv_values[29] != 0 else 0
         
-        # 确定趋势方向
-        trend_7d = "上涨" if ahr_change_7d > 0 else "下跌"
-        trend_30d = "上涨" if ahr_change_30d > 0 else "下跌"
+        trend_7d = "上涨" if mvrv_change_7d > 0 else "下跌"
+        trend_30d = "上涨" if mvrv_change_30d > 0 else "下跌"
         
-        # 计算AHR999处于历史百分位
-        min_ahr = min(ahr_values)
-        max_ahr = max(ahr_values)
-        ahr_percentile = ((current_ahr - min_ahr) / (max_ahr - min_ahr) * 100) if max_ahr > min_ahr else 50
+        min_mvrv = min(mvrv_values)
+        max_mvrv = max(mvrv_values)
+        mvrv_percentile = ((current_mvrv - min_mvrv) / (max_mvrv - min_mvrv) * 100) if max_mvrv > min_mvrv else 50
         
-        # 根据AHR999值判断市场状态
         market_state = "未知"
-        if current_ahr < 0.45:
-            market_state = "极度低估"
-        elif current_ahr < 0.75:
-            market_state = "低估"
-        elif current_ahr < 1.0:
-            market_state = "价值区间下限"
-        elif current_ahr < 1.25:
-            market_state = "价值区间上限"
-        elif current_ahr < 1.5:
-            market_state = "高估"
+        if current_mvrv < 1.0:
+            market_state = "低于已实现价值"
+        elif current_mvrv < 1.5:
+            market_state = "合理区间"
+        elif current_mvrv < 2.5:
+            market_state = "偏高区间"
+        elif current_mvrv < 3.5:
+            market_state = "高估区间"
         else:
             market_state = "极度高估"
         
         return {
             "status": "success",
-            "current_value": current_ahr,
+            "current_value": current_mvrv,
             "avg_7d": avg_7d,
             "avg_30d": avg_30d,
-            "change_1d": ahr_change_1d,
-            "change_7d": ahr_change_7d,
-            "change_30d": ahr_change_30d,
+            "change_1d": mvrv_change_1d,
+            "change_7d": mvrv_change_7d,
+            "change_30d": mvrv_change_30d,
             "trend_7d": trend_7d,
             "trend_30d": trend_30d,
-            "percentile": ahr_percentile,
+            "percentile": mvrv_percentile,
             "market_state": market_state,
             "latest_date": dates[0] if dates else None
         }
@@ -356,10 +339,9 @@ class TrendAnalyzer:
             "formatted_output": ""
         }
         
-        # 如果有情绪分析数据，则添加相应的建议
         if sentiment_analysis["status"] == "success":
-            if "ahr999" in sentiment_analysis and sentiment_analysis["ahr999"]["status"] == "success":
-                advice["ahr999_based"] = self._get_ahr999_based_advice(sentiment_analysis["ahr999"])
+            if "mvrv" in sentiment_analysis and sentiment_analysis["mvrv"]["status"] == "success":
+                advice["mvrv_based"] = self._get_mvrv_based_advice(sentiment_analysis["mvrv"])
             
             if "fear_greed" in sentiment_analysis and sentiment_analysis["fear_greed"]["status"] == "success":
                 advice["fear_greed_based"] = self._get_fear_greed_based_advice(sentiment_analysis["fear_greed"])
@@ -423,45 +405,39 @@ class TrendAnalyzer:
                     "confidence": "中"
                 }
     
-    def _get_ahr999_based_advice(self, ahr999_analysis):
-        """基于AHR999指数分析生成建议"""
-        current_ahr = ahr999_analysis["current_value"]
-        market_state = ahr999_analysis["market_state"]
+    def _get_mvrv_based_advice(self, mvrv_analysis):
+        """基于MVRV比率分析生成建议"""
+        current_mvrv = mvrv_analysis["current_value"]
+        market_state = mvrv_analysis["market_state"]
         
-        if market_state == "极度低估":
+        if market_state == "低于已实现价值":
             return {
-                "action": "大幅买入",
-                "reason": f"AHR999指数({current_ahr:.3f})表明市场极度低估",
-                "confidence": "高"
-            }
-        elif market_state == "低估":
-            return {
-                "action": "定期买入",
-                "reason": f"AHR999指数({current_ahr:.3f})表明市场低估",
+                "action": "逐步买入",
+                "reason": f"MVRV比率({current_mvrv:.3f})低于1，市场价值低于已实现价值",
                 "confidence": "中高"
             }
-        elif market_state == "价值区间下限":
-            return {
-                "action": "小幅买入",
-                "reason": f"AHR999指数({current_ahr:.3f})表明市场接近合理价值区间下限",
-                "confidence": "中"
-            }
-        elif market_state == "价值区间上限":
+        elif market_state == "合理区间":
             return {
                 "action": "持有",
-                "reason": f"AHR999指数({current_ahr:.3f})表明市场接近合理价值区间上限",
+                "reason": f"MVRV比率({current_mvrv:.3f})处于合理区间",
                 "confidence": "中"
             }
-        elif market_state == "高估":
+        elif market_state == "偏高区间":
             return {
-                "action": "小幅减仓",
-                "reason": f"AHR999指数({current_ahr:.3f})表明市场高估",
+                "action": "谨慎持有",
+                "reason": f"MVRV比率({current_mvrv:.3f})偏高，注意风险",
+                "confidence": "中"
+            }
+        elif market_state == "高估区间":
+            return {
+                "action": "考虑减仓",
+                "reason": f"MVRV比率({current_mvrv:.3f})处于高估区间",
                 "confidence": "中高"
             }
-        else:  # 极度高估
+        else:
             return {
                 "action": "大幅减仓",
-                "reason": f"AHR999指数({current_ahr:.3f})表明市场极度高估",
+                "reason": f"MVRV比率({current_mvrv:.3f})极度高估",
                 "confidence": "高"
             }
     
@@ -515,12 +491,12 @@ class TrendAnalyzer:
         else:
             price_confidence = 0
         
-        if "ahr999_based" in advice_dict:
-            actions.append(advice_dict["ahr999_based"]["action"])
-            reasons.append(advice_dict["ahr999_based"]["reason"])
-            ahr_confidence = confidence_levels.get(advice_dict["ahr999_based"]["confidence"], 2)
+        if "mvrv_based" in advice_dict:
+            actions.append(advice_dict["mvrv_based"]["action"])
+            reasons.append(advice_dict["mvrv_based"]["reason"])
+            mvrv_confidence = confidence_levels.get(advice_dict["mvrv_based"]["confidence"], 2)
         else:
-            ahr_confidence = 0
+            mvrv_confidence = 0
         
         if "fear_greed_based" in advice_dict:
             actions.append(advice_dict["fear_greed_based"]["action"])
@@ -532,7 +508,7 @@ class TrendAnalyzer:
         # 统计每种行动的权重
         action_weights = {}
         for i, action in enumerate(actions):
-            confidence = [price_confidence, ahr_confidence, fg_confidence][i]
+            confidence = [price_confidence, mvrv_confidence, fg_confidence][i]
             if action in action_weights:
                 action_weights[action] += confidence
             else:
@@ -607,16 +583,15 @@ class TrendAnalyzer:
         # 市场情绪指标部分
         output.append("【💭 市场情绪指标】")
         if sentiment_analysis["status"] == "success":
-            # AHR999指数
-            if "ahr999" in sentiment_analysis and sentiment_analysis["ahr999"]["status"] == "success":
-                ahr = sentiment_analysis["ahr999"]
-                output.append("AHR999指数:")
-                output.append(f"  当前值: {ahr['current_value']:.3f} ({ahr['market_state']})")
-                output.append(f"  7日均值: {ahr['avg_7d']:.3f}")
-                output.append(f"  30日均值: {ahr['avg_30d']:.3f}")
-                output.append(f"  7日趋势: {ahr['trend_7d']} ({ahr['change_7d']:.2f}%)")
-                output.append(f"  30日趋势: {ahr['trend_30d']} ({ahr['change_30d']:.2f}%)")
-                output.append(f"  历史百分位: {ahr['percentile']:.2f}%")
+            if "mvrv" in sentiment_analysis and sentiment_analysis["mvrv"]["status"] == "success":
+                mvrv = sentiment_analysis["mvrv"]
+                output.append("MVRV比率:")
+                output.append(f"  当前值: {mvrv['current_value']:.3f} ({mvrv['market_state']})")
+                output.append(f"  7日均值: {mvrv['avg_7d']:.3f}")
+                output.append(f"  30日均值: {mvrv['avg_30d']:.3f}")
+                output.append(f"  7日趋势: {mvrv['trend_7d']} ({mvrv['change_7d']:.2f}%)")
+                output.append(f"  30日趋势: {mvrv['trend_30d']} ({mvrv['change_30d']:.2f}%)")
+                output.append(f"  历史百分位: {mvrv['percentile']:.2f}%")
                 output.append("")
             
             # 恐惧与贪婪指数
@@ -644,10 +619,10 @@ class TrendAnalyzer:
             output.append(f"基于价格分析: {pb['action']} (置信度: {pb['confidence']})")
             output.append(f"  原因: {pb['reason']}")
         
-        if "ahr999_based" in advice:
-            ab = advice["ahr999_based"]
-            output.append(f"基于AHR999指数: {ab['action']} (置信度: {ab['confidence']})")
-            output.append(f"  原因: {ab['reason']}")
+        if "mvrv_based" in advice:
+            mb = advice["mvrv_based"]
+            output.append(f"基于MVRV比率: {mb['action']} (置信度: {mb['confidence']})")
+            output.append(f"  原因: {mb['reason']}")
         
         if "fear_greed_based" in advice:
             fb = advice["fear_greed_based"]

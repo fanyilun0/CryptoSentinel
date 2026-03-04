@@ -1,4 +1,4 @@
-﻿import os
+import os
 import sys
 import json
 import asyncio
@@ -58,10 +58,10 @@ async def generate_analysis_report(force_update=False):
     
     # 数据统计信息
     btc_count = len(historical_data.get("btc_price", []))
-    ahr_count = len(historical_data.get("ahr999", []))
+    mvrv_count = len(historical_data.get("mvrv", []))
     fg_count = len(historical_data.get("fear_greed", []))
     
-    logger.info(f"获取到的历史数据: BTC价格({btc_count}条), AHR999指数({ahr_count}条), 恐惧贪婪指数({fg_count}条)")
+    logger.info(f"获取到的历史数据: BTC价格({btc_count}条), MVRV比率({mvrv_count}条), 恐惧贪婪指数({fg_count}条)")
     
     # 初始化趋势分析器
     analyzer = TrendAnalyzer(historical_data)
@@ -195,7 +195,7 @@ async def main():
     try:
         # 显示欢迎信息
         print("\n====== 加密货币监控系统 ======")
-        print("支持分析: BTC价格、AHR999指数和恐惧贪婪指数")
+        print("支持分析: BTC价格、MVRV比率和恐惧贪婪指数")
 
         # 执行基本流程：更新数据+AI建议
         print("正在检查数据更新，请稍候...\n")
