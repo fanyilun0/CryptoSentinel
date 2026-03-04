@@ -25,7 +25,7 @@
 1. 克隆本仓库：
 
 ```bash
-git clone https://github.com/yourusername/CryptoSentinel.git
+git clone https://github.com/fanyilun0/CryptoSentinel.git
 cd CryptoSentinel
 ```
 
@@ -70,20 +70,11 @@ python main.py -m
 ### 通过命令行直接使用
 
 ```bash
-# 生成分析报告（使用缓存数据）
+# 完整流程：数据采集 + 重组 + AI投资建议
 python main.py
 
-# 强制更新数据并生成分析报告
-python main.py --force
-
-# 运行MVRV数据获取工具
-python main.py --decode
-
-# 使用AI顾问获取投资建议
-python main.py --ai
-
-# 使用专用的AI顾问工具（更多选项）
-python ai_advisor_cli.py
+# 调试模式：数据采集 + 重组 + 生成提示词（不调用AI接口）
+python main.py --debug
 ```
 
 ### AI顾问专用工具
